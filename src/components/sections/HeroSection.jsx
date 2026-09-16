@@ -210,7 +210,7 @@ export function HeroSection() {
                 />
               </div>
 
-              <FloatingStat value="6" label="Products" style={{ top: -18, left: -28 }} />
+              <FloatingStat value="7" label="Products" style={{ top: -18, left: -28 }} />
               <FloatingStat value="4" label="Rails gems" style={{ bottom: 64, left: -36 }} />
               <FloatingStat
                 value={`${displayTotal}+`}

@@ -157,12 +157,48 @@ export function ExperienceSection() {
                     <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${C.border}` }}>
                       <p style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", textTransform: "uppercase", letterSpacing: "0.12em", color: C.secondary, marginBottom: 10 }}>Products</p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                        {job.projects.map((p, pi) => (
-                          <span key={pi} style={{ padding: "4px 12px", borderRadius: 100, fontSize: 12, fontFamily: "'JetBrains Mono',monospace", color: C.secondary, background: C.bg, border: `1px solid ${C.border}` }}>
-                            {p.name}
-                            {p.flagship && <span style={{ marginLeft: 5, color: C.accentText }}>★</span>}
-                          </span>
-                        ))}
+                        {job.projects.map((p, pi) => {
+                          const pillStyle = {
+                            padding: "4px 12px",
+                            borderRadius: 100,
+                            fontSize: 12,
+                            fontFamily: "'JetBrains Mono',monospace",
+                            color: C.secondary,
+                            background: C.bg,
+                            border: `1px solid ${C.border}`,
+                            textDecoration: "none",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            transition: "color 0.2s, border-color 0.2s",
+                          };
+                          return p.url ? (
+                            <a
+                              key={pi}
+                              href={p.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              style={pillStyle}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.color = C.accentText;
+                                e.currentTarget.style.borderColor = alpha(C.copper, "40");
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.color = C.secondary;
+                                e.currentTarget.style.borderColor = C.border;
+                              }}
+                            >
+                              {p.name}
+                              <IconExternal size={10} />
+                              {p.flagship && <span style={{ marginLeft: 2, color: C.accentText }}>★</span>}
+                            </a>
+                          ) : (
+                            <span key={pi} style={pillStyle}>
+                              {p.name}
+                              {p.flagship && <span style={{ marginLeft: 5, color: C.accentText }}>★</span>}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

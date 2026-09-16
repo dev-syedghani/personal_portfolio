@@ -27,24 +27,24 @@ const resumeData = {
   photo: "/syed_ghani.jpg",
 
   availability: {
-    status: "Available immediately",
+    status: "Currently employed — open to the right opportunity",
     modes: [
       "Full-time — on-site / hybrid (Lahore)",
       "Full-time — remote (global)",
       "Contract — remote (global)",
     ],
-    note: "Currently interviewing. Open to Lahore-based product studios/agencies and remote-first teams worldwide.",
+    note: "Senior Software Engineer at Stackworx. Open to hearing about roles at Lahore-based product studios/agencies and remote-first teams worldwide.",
   },
 
   credibilityStrip: [
-    "6 SaaS Products Shipped",
+    "7 SaaS Products Shipped",
     "Sole Engineer on a Production PRM",
     "4 Published Rails Gems",
     "Gem Downloads (live from RubyGems)",
   ],
 
   summary:
-    "Full-stack engineer focused on Ruby on Rails and React who has shipped and owned a production SaaS platform end-to-end — not just contributed to one. As sole engineer on CinnaLab PRM, built the entire system from zero to production in 8 months: multi-tenant React/Rails architecture, bi-directional HubSpot/Salesforce CRM sync, a zero-data-loss Paddle-to-Chargebee billing migration, and a Devise + Pundit RBAC system with ActionCable-powered real-time notifications — running with zero critical incidents since launch. Across 6 SaaS products in AI/PRM, fintech, ed-tech, and college athletics, the pattern repeats: given ambiguous scope, ships working production systems, not prototypes — entirely async where needed, with 100% on-time sprint delivery. Also maintains 4 open-source Rails gems with {GEM_DOWNLOADS} combined downloads. Following a company-wide downsizing at Blackstack (May 2026, not performance-related), has used the interim to deepen Docker, AWS, and background-job expertise, and to learn Django.",
+    "Full-stack engineer focused on Ruby on Rails and React who has shipped and owned a production SaaS platform end-to-end — not just contributed to one. Currently a Senior Software Engineer at Stackworx, working on Midway Sports' Rails + Shopify e-commerce platform: the out-of-stock case lifecycle, multi-vendor inventory ingestion, and returns processing. Previously, as sole engineer on CinnaLab PRM at Blackstack, built the entire system from zero to production in 8 months: multi-tenant React/Rails architecture, bi-directional HubSpot/Salesforce CRM sync, a zero-data-loss Paddle-to-Chargebee billing migration, and a Devise + Pundit RBAC system with ActionCable-powered real-time notifications — running with zero critical incidents since launch. Across 7 SaaS products in AI/PRM, fintech, ed-tech, e-commerce, and college athletics, the pattern repeats: given ambiguous scope, ships working production systems, not prototypes. Also maintains 4 open-source Rails gems with {GEM_DOWNLOADS} combined downloads.",
 
   aboutExtra:
     "I care about clear boundaries between domains, tests that earn their keep (RSpec / Jest), and integrations that survive real traffic. Comfortable owning a slice of the stack from migration to deploy — or the whole thing, solo, from architecture to launch.",
@@ -103,6 +103,24 @@ const resumeData = {
       points: [
         "Developed solutions for inventory sync, improving efficiency in stock management.",
         "Enhanced features for out-of-stock items and streamlined the returns process.",
+      ],
+      projects: [
+        {
+          name: "Midway Sports",
+          url: "https://midwaysports.com",
+          description:
+            "Rails 7.2 monolith running Midway Sports' e-commerce operations end-to-end: internal ops dashboard, Shopify-embedded admin tools, and customer-facing self-service portals from one codebase.",
+          tech: ["Ruby on Rails 7.2", "PostgreSQL", "pgvector", "Sidekiq", "Redis", "Shopify GraphQL API", "Hotwire", "Turbo Streams", "ActionCable", "Devise"],
+          problem:
+            "Out-of-stock orders, multi-vendor inventory files, and returns all ran through manual staff intervention — slow for customers and a recurring ops burden for the team.",
+          metrics: [
+            "Built the OOS (out-of-stock) case lifecycle end-to-end: Shopify webhook creates the case, customers self-serve a replacement or refund, Shopify GraphQL mutations execute it — no staff approval needed in the common path",
+            "Automated day-8 auto-refund and 3/5/7-day reminder emails via cron-driven Sidekiq jobs, independent of whether the customer ever revisits the case",
+            "Kept an audit trail and a live staff notification feed as two deliberately separate systems (PublicActivity for the permanent case timeline, Noticed for per-staff-user read state), both driven off one activity-logging choke point",
+            "Built per-vendor file parsers for inventory ingestion, since vendor file formats aren't standardized — plus a daily job that flags SKUs that never resolved to a product",
+            "Isolated Nike/Jordan dropship tracking (headless-browser scraping) onto its own Sidekiq/dyno process so a scraping backlog can't starve routine inventory and order jobs",
+          ],
+        },
       ],
     },
     {
