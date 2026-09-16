@@ -54,18 +54,18 @@ export default function App() {
         <main>
           <HeroSection />
           <MetricsSection />
-          <RailsShowcaseSection />
           <CaseStudiesSection />
-          <GemsSection />
           <ProjectsSection />
+          <RailsShowcaseSection />
+          <TechStackSection />
           <SkillsSection />
           <ProcessSection />
-          <TechStackSection />
+          <GemsSection />
           <GitHubSection />
           <ExperienceSection />
-          <EducationSection />
           <TestimonialsSection />
           <AboutSection />
+          <EducationSection />
           <ContactSection />
         </main>
         <Footer />

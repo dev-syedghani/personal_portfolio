@@ -7,7 +7,7 @@ import { FlipCard } from "../FlipCard";
 
 export function EducationSection() {
   return (
-    <Section id="education" label="Background" title="Education" subtitle="Hover for coursework and final year project." tinted watermark="EDUCATION">
+    <Section id="education" label="About — Education" title="Education" subtitle="Hover for coursework and final year project." tinted watermark="EDUCATION">
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: 16, maxWidth: 560, margin: "0 auto" }}>
         {resumeData.education.map((edu, i) => (
           <FadeUp key={i} delay={i * 60}>
@@ -29,7 +29,7 @@ export function EducationSection() {
                   >
                     <IconEducation size={24} />
                   </div>
-                  <h3 style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, color: C.primary, fontSize: 18, margin: "0 0 6px" }}>{edu.degree}</h3>
+                  <h3 style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, color: C.primary, fontSize: 18, margin: "0 0 6px" }}>{edu.degree}</h3>
                   <p style={{ color: C.accentText, fontWeight: 600, margin: "0 0 4px", fontSize: 14 }}>{edu.institution}</p>
                   <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: C.secondary }}>{edu.duration}</span>
                   <p style={{ fontSize: 11, color: C.accentText, marginTop: 16, fontFamily: "'JetBrains Mono',monospace" }}>Hover for details →</p>

@@ -23,20 +23,20 @@ export function Footer() {
               width: 36,
               height: 36,
               borderRadius: 10,
-              background: `linear-gradient(135deg, ${C.gold}, ${C.goldDeep})`,
+              background: C.primary,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: C.onGold,
+              color: C.bg,
               fontSize: 14,
-              fontWeight: 800,
-              fontFamily: "'Space Grotesk',sans-serif",
+              fontWeight: 700,
+              fontFamily: "'Inter',sans-serif",
             }}
           >
             SG
           </div>
           <div>
-            <p style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, color: C.primary, fontSize: 14, margin: 0 }}>
+            <p style={{ fontFamily: "'Inter',sans-serif", fontWeight: 600, color: C.primary, fontSize: 14, margin: 0 }}>
               Syed M. Ghani
             </p>
             <p style={{ fontFamily: "'JetBrains Mono',monospace", color: C.secondary, fontSize: 11, margin: 0 }}>

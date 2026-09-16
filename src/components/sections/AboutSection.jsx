@@ -17,7 +17,7 @@ export function AboutSection() {
   const summaryParts = resumeData.summary.split("{GEM_DOWNLOADS}");
 
   return (
-    <Section id="about" label="About" title="Who You're Hiring" watermark="ABOUT">
+    <Section id="about" label="07 / About" title="Who You're Hiring" watermark="ABOUT">
       <div className="about-grid">
         <FadeUp>
           <motion.div ref={photoParallaxRef} style={{ position: "relative", maxWidth: 260, y: photoParallaxY }}>
@@ -28,11 +28,11 @@ export function AboutSection() {
                 style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
                 onError={(e) => {
                   e.target.style.display = "none";
-                  e.target.parentElement.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${C.surface};font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:800;color:${C.copper}">SG</div>`;
+                  e.target.parentElement.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${C.surface};font-family:'Inter',sans-serif;font-size:52px;font-weight:800;color:${C.copper}">SG</div>`;
                 }}
               />
             </div>
-            <div style={{ position: "absolute", bottom: -14, right: -14, padding: "8px 16px", borderRadius: 10, background: `linear-gradient(135deg, ${C.copper}, ${C.copperDeep})`, color: C.onGold, fontSize: 12, fontFamily: "'JetBrains Mono',monospace", boxShadow: `0 6px 20px rgba(0,0,0,0.35)` }}>
+            <div style={{ position: "absolute", bottom: -14, right: -14, padding: "8px 16px", borderRadius: 8, background: C.primary, color: C.bg, fontSize: 12, fontFamily: "'JetBrains Mono',monospace" }}>
               GMT+5 · Remote ✓
             </div>
           </motion.div>
@@ -68,9 +68,9 @@ export function AboutSection() {
               ))}
             </div>
 
-            <div style={{ padding: "16px 20px", borderRadius: 12, background: C.surface, border: `1px solid ${C.border}`, marginBottom: 28 }}>
+            <div className="glass" style={{ padding: "16px 20px", borderRadius: 14, marginBottom: 28 }}>
               <p style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", textTransform: "uppercase", letterSpacing: "0.12em", color: C.secondary, margin: "0 0 6px" }}>Education</p>
-              <p style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, color: C.primary, fontSize: 14, margin: "0 0 2px" }}>{resumeData.education[0].degree}</p>
+              <p style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, color: C.primary, fontSize: 14, margin: "0 0 2px" }}>{resumeData.education[0].degree}</p>
               <p style={{ color: C.accentText, fontSize: 13, margin: 0 }}>{resumeData.education[0].institution} · {resumeData.education[0].duration}</p>
             </div>
 

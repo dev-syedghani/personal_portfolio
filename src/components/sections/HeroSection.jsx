@@ -1,341 +1,237 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import resumeData from "../../utils/resumeData";
-import C, { alpha } from "../../theme";
+import C from "../../theme";
 import { useGemStatsContext } from "../../context/GemStatsContext";
 import { IconArrow } from "../Icons";
 import { TypewriterText } from "./TypewriterText";
-import { FadeUp } from "../UI";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
-import { useScrollParallax } from "../../hooks/useScrollParallax";
+import { usePointerFine } from "../../hooks/usePointerFine";
 import { useTilt3D } from "../../hooks/useTilt3D";
-import { useInView } from "../../hooks/useInView";
 
-function TiltPortrait() {
-  const { ref, onPointerMove, onPointerLeave, tilt, enabled } = useTilt3D({ max: 8 });
+// A soft radial light that drifts toward the cursor — depth, not decoration.
+// Gated to fine-pointer, non-reduced-motion devices; a static centered glow
+// stands in everywhere else.
+function AmbientLight() {
+  const ref = useRef(null);
+  const fine = usePointerFine();
   const reducedMotion = usePrefersReducedMotion();
-  const [viewRef, inView] = useInView();
-  const spinning = inView && !reducedMotion;
+  const enabled = fine && !reducedMotion;
+
+  useEffect(() => {
+    if (!enabled) return;
+    const el = ref.current;
+    if (!el) return;
+    const onMove = (e) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      el.style.setProperty("--mx", `${x}%`);
+      el.style.setProperty("--my", `${y}%`);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [enabled]);
 
   return (
-    <div ref={viewRef} style={{ position: "relative", width: "100%", maxWidth: 460, margin: "0 auto" }}>
-      {/* Decorative rings are deliberately much smaller than the photo so the person
-          visually breaks past their edges (shoulders/head popping out of the circle)
-          instead of being contained inside it. */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          width: "62%",
-          aspectRatio: "1",
-          transform: "translate(-50%, -50%)",
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${alpha(C.copper, "35")} 0%, transparent 70%)`,
-          filter: "blur(40px)",
-          zIndex: 0,
-        }}
-      />
-      {!reducedMotion && (
-        <>
-          {/* Parked once scrolled past — these would otherwise spin for the
-              entire session, including while the visitor is 10 sections down. */}
-          <motion.div
-            style={{ position: "absolute", top: "50%", left: "50%", width: "68%", aspectRatio: "1", borderRadius: "50%", border: `1px dashed ${alpha(C.copper, "50")}`, zIndex: 0 }}
-            initial={{ x: "-50%", y: "-50%" }}
-            animate={spinning ? { rotate: 360, x: "-50%", y: "-50%" } : { rotate: 0, x: "-50%", y: "-50%" }}
-            transition={spinning ? { duration: 34, repeat: Infinity, ease: "linear" } : { duration: 0 }}
-          />
-          <motion.div
-            style={{ position: "absolute", top: "50%", left: "50%", width: "80%", aspectRatio: "1", borderRadius: "50%", border: `1px dotted ${C.border}`, zIndex: 0 }}
-            initial={{ x: "-50%", y: "-50%" }}
-            animate={spinning ? { rotate: -360, x: "-50%", y: "-50%" } : { rotate: 0, x: "-50%", y: "-50%" }}
-            transition={spinning ? { duration: 50, repeat: Infinity, ease: "linear" } : { duration: 0 }}
-          />
-        </>
-      )}
-      <div
-        ref={ref}
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
-        style={{
-          position: "relative",
-          zIndex: 1,
-          transform: enabled ? `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` : "none",
-          transition: "transform 0.2s ease-out",
-        }}
-      >
-        {/* The original cutout was a 920KB 1024px PNG rendered at ~420px — by far
-            the heaviest thing on the page. These are resized to 840px (2x for
-            retina): 62KB as WebP, 199KB as the PNG fallback. */}
-        <picture>
-          <source srcSet="/syed_ghani_no_bg.webp" type="image/webp" />
-          <img
-            src="/syed_ghani_no_bg.min.png"
-            alt="Syed M. Ghani — Ruby on Rails & React Engineer, Lahore"
-            width={840}
-            height={840}
-            /* The page's LCP element: fetched eagerly at high priority, with
-               width/height reserving the box so the hero doesn't reflow. */
-            fetchpriority="high"
-            decoding="async"
-            style={{ width: "100%", height: "auto", display: "block", filter: "drop-shadow(0 30px 50px rgba(0,0,0,0.5))" }}
-            onError={(e) => {
-              // Falls back to the existing photo if the cutout isn't reachable.
-              if (e.target.src.indexOf("syed_ghani_no_bg") !== -1) {
-                e.target.src = resumeData.photo;
-                e.target.style.borderRadius = "24px";
-              } else {
-                e.target.style.display = "none";
-              }
-            }}
-          />
-        </picture>
-      </div>
-    </div>
+    <div
+      ref={ref}
+      aria-hidden="true"
+      style={{
+        position: "absolute",
+        inset: 0,
+        pointerEvents: "none",
+        background: enabled
+          ? "radial-gradient(600px circle at var(--mx,70%) var(--my,30%), rgba(139,140,255,0.06), transparent 60%)"
+          : "radial-gradient(700px circle at 70% 20%, rgba(139,140,255,0.05), transparent 60%)",
+        transition: enabled ? "none" : "background 0.6s ease",
+      }}
+    />
   );
 }
 
-function ContactWidget() {
-  const reducedMotion = usePrefersReducedMotion();
-  const [viewRef, inView] = useInView();
-  const floating = inView && !reducedMotion;
+// Small floating glass data panel — the hero's stats aren't a row under the
+// fold, they're scattered around the composition like readouts on a surface.
+function FloatingStat({ value, label, style }) {
   return (
-    <motion.a
-      ref={viewRef}
-      href="#contact"
-      animate={floating ? { y: [0, 8, 0] } : { y: 0 }}
-      transition={floating ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
+    <motion.div
+      className="glass"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
       style={{
         position: "absolute",
-        bottom: 8,
-        right: 8,
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        padding: "10px 16px 10px 10px",
         borderRadius: 14,
-        background: "rgba(12,10,8,0.8)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        border: `1px solid ${alpha(C.copper, "45")}`,
-        boxShadow: "0 16px 40px rgba(0,0,0,0.45)",
-        textDecoration: "none",
-        zIndex: 3,
+        padding: "10px 16px",
+        textAlign: "left",
+        ...style,
       }}
     >
-      <span
-        style={{
-          width: 34,
-          height: 34,
-          borderRadius: "50%",
-          background: `linear-gradient(135deg, ${C.gold}, ${C.goldDeep})`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 13,
-          fontWeight: 800,
-          color: C.onGold,
-          flexShrink: 0,
-        }}
-      >
-        SG
-      </span>
-      <div>
-        <div style={{ fontSize: 9, color: "#9a9a9a", textTransform: "uppercase", letterSpacing: "0.1em" }}>Let's talk</div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", fontFamily: "'Space Grotesk',sans-serif" }}>Syed Ghani</div>
-      </div>
-      <IconArrow />
-    </motion.a>
+      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 600, color: C.primary, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 10, color: C.secondary, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 3 }}>{label}</div>
+    </motion.div>
   );
 }
 
 export function HeroSection() {
   const { displayTotal, isLive } = useGemStatsContext();
-  const { ref: parallaxRef, y: parallaxY } = useScrollParallax(140, ["start start", "end start"]);
+  const portraitTilt = useTilt3D({ max: 6 });
 
   return (
-    <section ref={parallaxRef} style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", overflow: "hidden", paddingTop: 64 }}>
-      <motion.div className="crosshair-grid" style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.5, y: parallaxY }}>
-        <div style={{ position: "absolute", top: -120, left: -80, width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(226,199,153,0.06) 0%, transparent 70%)", filter: "blur(60px)" }} />
-        <div style={{ position: "absolute", bottom: -100, right: -80, width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(226,199,153,0.05) 0%, transparent 70%)", filter: "blur(60px)" }} />
-      </motion.div>
+    <section style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", overflow: "hidden", paddingTop: 110, paddingBottom: 80 }}>
+      <AmbientLight />
 
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "10%",
-          left: "2%",
-          pointerEvents: "none",
-          userSelect: "none",
-          zIndex: 0,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "'Space Grotesk',sans-serif",
-            fontWeight: 800,
-            fontSize: "clamp(40px, 7vw, 110px)",
-            lineHeight: 0.95,
-            color: C.primary,
-            opacity: 0.12,
-            letterSpacing: "0.03em",
-            whiteSpace: "nowrap",
-          }}
-        >
-          SYED
-        </div>
-        <div
-          style={{
-            fontFamily: "'Space Grotesk',sans-serif",
-            fontWeight: 800,
-            fontSize: "clamp(40px, 7vw, 110px)",
-            lineHeight: 0.95,
-            color: C.accentText,
-            opacity: 0.14,
-            letterSpacing: "0.03em",
-            marginTop: -6,
-            whiteSpace: "nowrap",
-          }}
-        >
-          GHANI
-        </div>
-      </div>
-
-      <div className="hero-split">
-        <div style={{ position: "relative", zIndex: 2, flex: "1 1 480px", maxWidth: 560 }}>
-          <FadeUp>
-            <div
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 1160, margin: "0 auto", padding: "0 24px", width: "100%" }}>
+        <div className="hero-composition">
+          {/* Text column */}
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "8px 16px",
-                borderRadius: 100,
-                border: `1px solid ${alpha(C.copper, "40")}`,
-                background: `${alpha(C.copper, "0C")}`,
-                fontSize: 12,
                 fontFamily: "'JetBrains Mono',monospace",
-                color: C.accentText,
-                marginBottom: 24,
-                letterSpacing: "0.05em",
-              }}
-            >
-              <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.copper, animation: "pulse 2s infinite" }} />
-              Open to Lahore companies & remote roles worldwide
-            </div>
-          </FadeUp>
-
-          <FadeUp delay={40}>
-            <h1
-              style={{
-                fontFamily: "'Space Grotesk',sans-serif",
-                fontSize: "clamp(30px,4.4vw,48px)",
-                fontWeight: 700,
-                color: C.primary,
-                lineHeight: 1.15,
+                fontSize: 13,
+                color: C.secondary,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
                 marginBottom: 18,
               }}
             >
-              I help SaaS founders ship <span style={{ color: C.accentText }}>production-ready</span> Rails & React features.
-            </h1>
-          </FadeUp>
+              Software Engineer
+            </motion.p>
 
-          <FadeUp delay={80}>
-            <div
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
               style={{
-                fontFamily: "'JetBrains Mono',monospace",
-                fontSize: 16,
-                fontWeight: 600,
-                color: C.accentText,
-                minHeight: 24,
-                marginBottom: 28,
+                fontFamily: "'Inter',sans-serif",
+                fontWeight: 800,
+                fontSize: "clamp(64px, 11vw, 148px)",
+                lineHeight: 0.86,
+                letterSpacing: "-0.03em",
+                color: C.primary,
+                margin: 0,
               }}
             >
-              <span style={{ color: C.secondary, marginRight: 8 }}>{'>'}</span>
-              <TypewriterText words={resumeData.titles} />
-            </div>
-          </FadeUp>
+              SYED
+              <br />
+              GHANI
+            </motion.h1>
 
-          <FadeUp delay={120}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 36 }}>
-              <a
-                id="hero-contact"
-                href="#contact"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "12px 24px",
-                  background: `linear-gradient(135deg, ${C.gold}, ${C.goldDeep})`,
-                  color: C.onGold,
-                  borderRadius: C.radius,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  fontFamily: "'Space Grotesk',sans-serif",
-                  textDecoration: "none",
-                  boxShadow: `0 6px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)`,
-                }}
-              >
-                Get in Touch <IconArrow />
-              </a>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              style={{
+                fontFamily: "'Inter',sans-serif",
+                fontSize: "clamp(16px,1.8vw,20px)",
+                color: C.secondary,
+                maxWidth: 460,
+                margin: "28px 0 0",
+                lineHeight: 1.5,
+              }}
+            >
+              I build production software for real businesses — Ruby on Rails and React, end to end.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 14, color: C.accentText, marginTop: 16, minHeight: 20 }}
+            >
+              <TypewriterText words={resumeData.titles} />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              style={{ marginTop: 40 }}
+            >
               <a
                 id="hero-view-work"
                 href="#case-studies"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 8,
-                  padding: "12px 20px",
-                  color: C.secondary,
+                  gap: 10,
+                  padding: "13px 24px",
+                  background: C.primary,
+                  color: C.bg,
+                  borderRadius: 100,
                   fontSize: 14,
                   fontWeight: 600,
-                  fontFamily: "'Space Grotesk',sans-serif",
+                  fontFamily: "'Inter',sans-serif",
                   textDecoration: "none",
-                  transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = C.accentText)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = C.secondary)}
               >
-                View Projects ↓
+                Explore work <IconArrow />
               </a>
-            </div>
-          </FadeUp>
+            </motion.div>
+          </div>
 
-          <FadeUp delay={160}>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 20,
-                fontSize: 11,
-                fontFamily: "'JetBrains Mono',monospace",
-                color: C.secondary,
-                borderTop: `1px solid ${C.border}`,
-                paddingTop: 20,
-              }}
+          {/* Portrait — deliberately breaks out of the text column's grid line,
+              tilts in 3D toward the cursor, and carries floating glass stat
+              panels anchored to its edges. The panels sit *outside* the
+              tilted element (their own layer, undoing the rotation) so they
+              read as hovering just in front of the glass, not glued flat to
+              a rotating surface. */}
+          <div className="hero-portrait-wrap">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              style={{ position: "relative" }}
             >
-              <span>© {new Date().getFullYear()}</span>
-              {resumeData.credibilityStrip.slice(0, 2).map((item, i) => (
-                <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ width: 4, height: 4, borderRadius: "50%", background: C.copper, flexShrink: 0 }} />
-                  {item}
-                </span>
-              ))}
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 4, height: 4, borderRadius: "50%", background: C.copper, flexShrink: 0 }} />
-                {displayTotal}+ Gem Downloads{isLive ? " (live)" : ""}
-              </span>
-            </div>
-          </FadeUp>
+              <div
+                ref={portraitTilt.ref}
+                onPointerMove={portraitTilt.onPointerMove}
+                onPointerLeave={portraitTilt.onPointerLeave}
+                style={{
+                  width: "100%",
+                  aspectRatio: "3/4",
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  border: `1px solid ${C.border}`,
+                  transform: portraitTilt.enabled
+                    ? `perspective(1200px) rotateX(${portraitTilt.tilt.rx}deg) rotateY(${portraitTilt.tilt.ry}deg)`
+                    : "none",
+                  transition: "transform 0.2s ease-out",
+                }}
+              >
+                <img
+                  src={resumeData.photo}
+                  alt="Syed M. Ghani — Ruby on Rails & React Engineer, Lahore"
+                  fetchpriority="high"
+                  decoding="async"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+                />
+              </div>
+
+              <FloatingStat value="6" label="Products" style={{ top: -18, left: -28 }} />
+              <FloatingStat value="4" label="Rails gems" style={{ bottom: 64, left: -36 }} />
+              <FloatingStat
+                value={`${displayTotal}+`}
+                label={isLive ? "Downloads (live)" : "Downloads"}
+                style={{ bottom: -16, right: -20 }}
+              />
+            </motion.div>
+          </div>
         </div>
 
-        <div style={{ position: "relative", zIndex: 2, flex: "1 1 380px", maxWidth: 420 }}>
-          <FadeUp delay={100}>
-            <TiltPortrait />
-          </FadeUp>
-          <ContactWidget />
+        {/* Corner metadata — floating, not stacked under the CTA. */}
+        <div className="hero-corner hero-corner--tl">
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: C.secondary, letterSpacing: "0.06em" }}>
+            Lahore / Remote
+          </span>
+        </div>
+        <div className="hero-corner hero-corner--bl">
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.success, display: "inline-block" }} />
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: C.secondary, letterSpacing: "0.06em" }}>
+            Available for work
+          </span>
         </div>
       </div>
     </section>

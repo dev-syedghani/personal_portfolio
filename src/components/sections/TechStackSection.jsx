@@ -10,7 +10,7 @@ import { Section } from "../UI";
 // settles. Do not wrap this in FadeUp or any other entrance-animation component.
 export function TechStackSection() {
   return (
-    <Section id="tech-stack" label="Architecture & Tools" title="System Topology" subtitle="Interactive flowchart — click any node to inspect its production role. Gold lines trace connections to the core engine." tinted watermark="STACK">
+    <Section id="tech-stack" label="Engineering — Architecture" title="System Topology" subtitle="Interactive flowchart — click any node to inspect its production role. Gold lines trace connections to the core engine." tinted watermark="STACK">
       <SystemFlowchart C={C} />
     </Section>
   );

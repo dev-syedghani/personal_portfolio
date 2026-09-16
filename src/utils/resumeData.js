@@ -94,7 +94,20 @@ const resumeData = {
   // ── Experience ────────────────────────────────────────────────────────────
   experience: [
     {
+      role: "Senior Software Engineer",
+      company: "Stackworx",
+      logo: "/logos/stackworx.svg",
+      location: "Lahore, Punjab, Pakistan · On-site",
+      duration: "Aug 2026 — Present",
+      summary: "Rails + Shopify project at Stackworx, focusing on inventory management and user experience.",
+      points: [
+        "Developed solutions for inventory sync, improving efficiency in stock management.",
+        "Enhanced features for out-of-stock items and streamlined the returns process.",
+      ],
+    },
+    {
       company: "Blackstack Software Solutions",
+      logo: "/logos/blackstack.svg",
       companyUrl: "https://www.linkedin.com/company/blackstack-software-solutions/posts/?feedView=all",
       location: "Lahore, Pakistan · Remote-friendly",
       roles: [
@@ -178,6 +191,7 @@ const resumeData = {
     {
       role: "Research & Development Intern",
       company: "Al-Khawarizmi Institute of Computer Science (KICS), UET Lahore",
+      logo: "/logos/kics.png",
       companyUrl: "https://www.linkedin.com/company/kics/posts/?feedView=all",
       location: "Lahore, Pakistan",
       duration: "Sep 2023 — Nov 2023",
@@ -189,6 +203,7 @@ const resumeData = {
     {
       role: "Web Development Intern",
       company: "Apex Space",
+      logo: "/logos/apexspace.webp",
       companyUrl: "https://www.linkedin.com/company/apexspace/posts/?feedView=all",
       location: "Lahore, Pakistan",
       duration: "Jun 2023 — Aug 2023",

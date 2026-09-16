@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        heading: ['Inter', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"JetBrains Mono"', '"IBM Plex Mono"', 'monospace'],
       },
@@ -19,12 +19,13 @@ export default {
         border:     'var(--border-c)',
         primary:    'var(--primary)',
         secondary:  'var(--secondary)',
-        // Copper/gold accent system — banner palette
-        accent:          '#E2C799',
-        accentLight:     '#DBC1A0',
-        success:         '#A8B5A0',
-        'accent-deep':   '#C4A574',
-        'accent-muted':  '#B8956A',
+        // "Midnight Engineering" indigo/teal accent system
+        accent:          'var(--accent)',
+        accent2:         'var(--accent-2)',
+        accentLight:     'var(--accent-muted)',
+        success:         'var(--success)',
+        'accent-deep':   'var(--accent-deep)',
+        'accent-muted':  'var(--accent-muted)',
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',

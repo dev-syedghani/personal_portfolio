@@ -33,8 +33,8 @@ export function ProjectModal({ project, onClose }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.7)",
-        backdropFilter: "blur(4px)",
+        background: "rgba(4,5,7,0.55)",
+        backdropFilter: "blur(10px) saturate(140%)", WebkitBackdropFilter: "blur(10px) saturate(140%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -45,19 +45,17 @@ export function ProjectModal({ project, onClose }) {
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
+        className="glass-heavy"
         initial={{ opacity: 0, rotateY: 180, scale: 0.6 }}
         animate={{ opacity: 1, rotateY: 0, scale: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          background: C.bg || "#0d0d0d",
-          border: `1px solid ${alpha(C.copper, "30")}`,
           borderRadius: 18,
           maxWidth: 640,
           width: "100%",
           maxHeight: "88vh",
           overflowY: "auto",
           position: "relative",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
         }}
       >
         <button
@@ -110,7 +108,7 @@ export function ProjectModal({ project, onClose }) {
                 color: C.onGold,
                 fontSize: 11,
                 fontWeight: 700,
-                fontFamily: "'Space Grotesk',sans-serif",
+                fontFamily: "'Inter',sans-serif",
               }}
             >
               Flagship{role ? ` · ${role}` : ""}
@@ -145,7 +143,7 @@ export function ProjectModal({ project, onClose }) {
         )}
 
         <div style={{ padding: "28px 32px 32px" }}>
-          <h3 style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 24, fontWeight: 700, color: C.primary, margin: "0 0 16px" }}>{name}</h3>
+          <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: 24, fontWeight: 700, color: C.primary, margin: "0 0 16px" }}>{name}</h3>
 
           {problem && (
             <p style={{ fontSize: 14, color: C.secondary, fontStyle: "italic", lineHeight: 1.75, marginBottom: 20, paddingLeft: 16, borderLeft: `2px solid ${C.border}` }}>
@@ -188,11 +186,11 @@ export function ProjectModal({ project, onClose }) {
                 gap: 8,
                 padding: "11px 22px",
                 borderRadius: 12,
-                background: `linear-gradient(135deg, ${C.gold}, ${C.goldDeep})`,
-                color: C.onGold,
+                background: C.primary,
+                color: C.bg,
                 fontSize: 14,
                 fontWeight: 700,
-                fontFamily: "'Space Grotesk',sans-serif",
+                fontFamily: "'Inter',sans-serif",
                 textDecoration: "none",
               }}
             >

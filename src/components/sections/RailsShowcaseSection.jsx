@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import resumeData from "../../utils/resumeData";
-import C, { alpha } from "../../theme";
+import C from "../../theme";
 import { FadeUp, Card, Section } from "../UI";
 import { DetailModal } from "../DetailModal";
 import { IconForTech, getTechColor } from "../Icons";
@@ -9,7 +9,7 @@ export function RailsShowcaseSection() {
   const [active, setActive] = useState(null);
 
   return (
-    <Section id="rails-showcase" label="Technical Depth" title="Rails Proficiency" subtitle="Not a skills checklist — concrete proof of depth across architecture, data, payments, and security. Click a card for the details." tinted watermark="RAILS">
+    <Section id="rails-showcase" label="02 / Engineering" title="I Build Systems, Not Just Features" subtitle="Not a skills checklist — concrete proof of depth across architecture, data, payments, and security. Click a card for the details." tinted watermark="RAILS">
       <div className="rails-grid" style={{ marginBottom: 24 }}>
         {resumeData.railsProficiency.map((pillar, i) => {
           const accentColor = getTechColor(pillar.icon);
@@ -17,6 +17,7 @@ export function RailsShowcaseSection() {
             <FadeUp key={i} delay={i * 80}>
               <Card
                 hover
+                tilt3D
                 onClick={() => setActive(pillar)}
                 style={{ padding: 28, height: "100%", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", justifyContent: "center", cursor: "pointer" }}
               >
@@ -36,7 +37,7 @@ export function RailsShowcaseSection() {
                 >
                   <IconForTech name={pillar.icon} size={24} />
                 </div>
-                <h3 style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, color: C.primary, fontSize: 17, margin: 0 }}>{pillar.title}</h3>
+                <h3 style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, color: C.primary, fontSize: 17, margin: 0 }}>{pillar.title}</h3>
                 <p style={{ fontSize: 11, color: C.accentText, marginTop: 14, fontFamily: "'JetBrains Mono',monospace" }}>Click for details →</p>
               </Card>
             </FadeUp>
@@ -48,13 +49,10 @@ export function RailsShowcaseSection() {
           style={{
             textAlign: "center",
             padding: "36px 32px",
-            borderRadius: 18,
-            border: `1px solid ${alpha(C.copper, "45")}`,
-            background: `linear-gradient(135deg, ${alpha(C.copper, "12")}, ${alpha(C.copper, "04")})`,
-            boxShadow: `0 12px 40px ${alpha(C.copper, "15")}`,
+            borderRadius: 12,
           }}
         >
-          <p style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: "clamp(20px,2.6vw,28px)", fontStyle: "italic", fontWeight: 700, color: C.accentText, margin: 0, lineHeight: 1.4 }}>
+          <p style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(19px,2.4vw,26px)", fontStyle: "italic", fontWeight: 500, color: C.primary, margin: 0, lineHeight: 1.5 }}>
             "{resumeData.railsClosingLine}"
           </p>
         </div>

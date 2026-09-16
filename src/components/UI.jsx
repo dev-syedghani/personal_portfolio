@@ -19,20 +19,23 @@ export function FadeUp({ children, delay = 0, className = "" }) {
   );
 }
 
+// Every Card on the page is a glass pane — the `.glass` class carries the
+// blur/saturate, the specular top edge and the inner shadows, so the look
+// stays identical everywhere and lives in one place.
 export function Card({ children, hover = true, tilt3D = false, className = "", style = {}, onClick }) {
   const [hov, setHov] = useState(false);
   const { ref, onPointerMove, onPointerLeave, tilt, enabled: tiltEnabled } = useTilt3D();
 
-  const lift = hov ? -4 : 0;
+  const lift = hov ? -3 : 0;
   const transform =
     tilt3D && tiltEnabled
-      ? `perspective(900px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(${lift}px)`
+      ? `perspective(1200px) rotateX(${tilt.rx * 0.4}deg) rotateY(${tilt.ry * 0.4}deg) translateY(${lift}px)`
       : `translateY(${lift}px)`;
 
   return (
     <div
       ref={tilt3D ? ref : undefined}
-      className={className}
+      className={`glass ${className}`.trim()}
       onClick={onClick}
       onMouseEnter={() => hover && setHov(true)}
       onMouseLeave={(e) => {
@@ -41,14 +44,9 @@ export function Card({ children, hover = true, tilt3D = false, className = "", s
       }}
       onPointerMove={tilt3D ? onPointerMove : undefined}
       style={{
-        background: C.surface,
-        border: `1px solid ${hov ? C.copper + "55" : C.border}`,
-        borderRadius: C.radius,
-        boxShadow: hov
-          ? "0 8px 32px var(--shadow-hover), var(--shadow-inset), 0 0 0 1px #E2C79918"
-          : "0 4px 16px var(--shadow-base), var(--shadow-inset)",
+        borderRadius: 18,
         transform,
-        transition: "background 0.3s, border-color 0.25s, box-shadow 0.25s, transform 0.15s ease-out",
+        transition: "border-color 0.25s, background 0.25s, box-shadow 0.25s, transform 0.25s cubic-bezier(0.22,1,0.36,1)",
         ...style,
       }}
     >
@@ -60,7 +58,32 @@ export function Card({ children, hover = true, tilt3D = false, className = "", s
 export function SkillPill({ skill, dashed = false }) {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
+  const tooltipRef = useRef(null);
+  // Extra horizontal nudge, on top of the base translateX(-50%) centering,
+  // applied only when the centered tooltip would actually clip past the
+  // viewport edge — most pills don't need this, but nothing clips overflow
+  // here (Section has no overflow:hidden), so a pill near the right edge of
+  // its wrapped row on a narrow phone can otherwise push the whole page into
+  // horizontal scroll. Measured after paint rather than guessed, since the
+  // clipping pill depends on where that specific pill landed in its wrapped
+  // row — not knowable from the component's own props.
+  const [nudge, setNudge] = useState(0);
   const hasDetail = skill.detail && skill.detail.length > 0;
+
+  useEffect(() => {
+    if (!open) {
+      setNudge(0);
+      return;
+    }
+    const el = tooltipRef.current;
+    if (!el) return;
+    const margin = 12;
+    const rect = el.getBoundingClientRect();
+    let delta = 0;
+    if (rect.left < margin) delta = margin - rect.left;
+    else if (rect.right > window.innerWidth - margin) delta = window.innerWidth - margin - rect.right;
+    if (delta !== 0) setNudge(delta);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -80,26 +103,27 @@ export function SkillPill({ skill, dashed = false }) {
       <button
         onClick={() => hasDetail && setOpen((o) => !o)}
         style={{
-          padding: "6px 14px",
-          borderRadius: 8,
+          padding: "7px 14px",
+          borderRadius: 100,
           fontSize: 13,
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 500,
           cursor: hasDetail ? "pointer" : "default",
-          background: dashed ? "transparent" : C.bg,
-          border: dashed ? `1.5px dashed ${C.border}` : `1px solid ${C.border}`,
+          background: dashed ? "transparent" : "color-mix(in srgb, var(--secondary) 8%, transparent)",
+          border: dashed ? `1.5px dashed ${C.border}` : "1px solid transparent",
           color: dashed ? C.secondary : C.primary,
           display: "inline-flex",
           alignItems: "center",
           gap: 7,
-          transition: "border-color 0.2s, color 0.2s",
+          transition: "background 0.2s, border-color 0.2s, color 0.2s",
           whiteSpace: "nowrap",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = C.copper;
+          e.currentTarget.style.background = "color-mix(in srgb, var(--accent) 14%, transparent)";
           e.currentTarget.style.color = C.accentText;
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = dashed ? C.border : C.border;
+          e.currentTarget.style.background = dashed ? "transparent" : "color-mix(in srgb, var(--secondary) 8%, transparent)";
           e.currentTarget.style.color = dashed ? C.secondary : C.primary;
         }}
       >
@@ -122,18 +146,18 @@ export function SkillPill({ skill, dashed = false }) {
 
       {hasDetail && open && (
         <div
+          ref={tooltipRef}
+          className="glass-popover"
           style={{
             position: "absolute",
             bottom: "calc(100% + 8px)",
             left: "50%",
-            transform: "translateX(-50%)",
-            background: C.surface,
-            border: `1px solid ${alpha(C.copper, "40")}`,
-            borderRadius: 10,
+            transform: `translateX(calc(-50% + ${nudge}px))`,
+            borderRadius: 12,
             padding: "10px 14px",
             minWidth: 180,
+            maxWidth: "calc(100vw - 24px)",
             zIndex: 100,
-            boxShadow: "0 8px 24px var(--shadow-hover)",
           }}
         >
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 6 }}>
@@ -148,10 +172,13 @@ export function SkillPill({ skill, dashed = false }) {
               position: "absolute",
               bottom: -6,
               left: "50%",
-              transform: "translateX(-50%)",
+              // Counter-shifts by the same nudge the box itself moved by, so
+              // the arrow keeps pointing at the pill button underneath
+              // regardless of how far the box got pushed to stay on-screen.
+              transform: `translateX(calc(-50% - ${nudge}px))`,
               width: 10,
               height: 10,
-              background: C.surface,
+              background: "var(--bg-alt)",
               border: `1px solid ${alpha(C.copper, "40")}`,
               borderTop: "none",
               borderLeft: "none",
@@ -164,70 +191,51 @@ export function SkillPill({ skill, dashed = false }) {
   );
 }
 
+// `watermark` is accepted but no longer rendered — decorative giant background
+// text reads as noise, not craft, once the design goal is minimalism. Kept in
+// the signature so call sites don't need to change.
 export function Section({ id, label, title, subtitle, children, tinted = false, watermark, className = "" }) {
-  const wm = watermark || null;
-
   return (
     <section
       id={id}
       className={`section-block ${className}`.trim()}
       style={{
         position: "relative",
-        overflow: "hidden",
         background: tinted ? "var(--tinted-bg)" : "transparent",
         transition: "background 0.3s, color 0.3s",
       }}
     >
-      {wm && (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: "-0.06em",
-            left: "50%",
-            transform: "translateX(-50%)",
-            fontFamily: "'Space Grotesk',sans-serif",
-            fontWeight: 800,
-            fontSize: "clamp(40px, 14vw, 200px)",
-            lineHeight: 1,
-            color: C.primary,
-            opacity: 0.035,
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            userSelect: "none",
-            zIndex: 0,
-            letterSpacing: "0.02em",
-          }}
-        >
-          {wm}
-        </div>
-      )}
-      <div className="section-inner" style={{ maxWidth: 1160, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div className="section-inner" style={{ maxWidth: 1160, margin: "0 auto", position: "relative" }}>
         {label && (
           <FadeUp>
-            <p
-              style={{
-                fontSize: 11,
-                fontFamily: "'JetBrains Mono',monospace",
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                color: C.accentText,
-                marginBottom: 8,
-              }}
-            >
-              {label}
-            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontFamily: "'JetBrains Mono',monospace",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: C.secondary,
+                  flexShrink: 0,
+                }}
+              >
+                {label}
+              </span>
+              <span aria-hidden="true" style={{ flex: 1, height: 1, background: C.border }} />
+            </div>
           </FadeUp>
         )}
         <FadeUp delay={40}>
           <h2
             style={{
-              fontFamily: "'Space Grotesk',sans-serif",
-              fontSize: "clamp(28px,4vw,38px)",
-              fontWeight: 700,
+              fontFamily: "'Inter',sans-serif",
+              fontSize: "clamp(30px,3.6vw,42px)",
+              fontWeight: 600,
+              letterSpacing: "-0.01em",
               color: C.primary,
               marginBottom: 12,
               lineHeight: 1.15,
+              maxWidth: 720,
             }}
           >
             {title}
@@ -235,7 +243,7 @@ export function Section({ id, label, title, subtitle, children, tinted = false, 
         </FadeUp>
         {subtitle && (
           <FadeUp delay={80}>
-            <p style={{ color: C.secondary, fontSize: 17, maxWidth: 640, marginBottom: 56, lineHeight: 1.7 }}>
+            <p style={{ color: C.secondary, fontSize: 16, maxWidth: 600, marginBottom: 56, lineHeight: 1.7 }}>
               {subtitle}
             </p>
           </FadeUp>

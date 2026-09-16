@@ -11,16 +11,25 @@ const C = {
   radius: 14,
   copper: "var(--accent)",
   copperDeep: "var(--accent-deep)",
-  // Accent used as *text*. Same gold as --accent in dark mode; a deeper bronze
-  // in light mode, where the gold that looks right on a button is unreadable as
+  // Accent used as *text*. A lighter tint in dark mode; a deeper ink in light
+  // mode, where the accent that looks right on a button is unreadable as
   // ink. Reach for this whenever the accent is the `color`, not the fill.
   accentText: "var(--accent-text)",
   amber: "var(--accent-muted)",
+  // Secondary/teal accent — used sparingly (data viz, secondary states).
+  accent2: "var(--accent-2)",
+  warning: "var(--warning)",
+  error: "var(--error)",
   bg: "var(--bg)",
   surface: "var(--surface)",
   border: "var(--border-c)",
   primary: "var(--primary)",
   secondary: "var(--secondary)",
+  muted: "var(--muted)",
+  glass: "var(--glass)",
+  glassStrong: "var(--glass-strong)",
+  glassBorder: "var(--glass-border)",
+  glassBorderHover: "var(--glass-border-hover)",
 };
 
 /**

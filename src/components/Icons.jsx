@@ -103,7 +103,7 @@ export const IconGlobe = ({ size = DEFAULT_SIZE, color = "#2196F3" }) => (
   <FaGlobeAmericas size={size} color={color} />
 );
 
-export const IconEducation = ({ size = DEFAULT_SIZE, color = "#E2C799" }) => (
+export const IconEducation = ({ size = DEFAULT_SIZE, color = "#7C8CFF" }) => (
   <FaGraduationCap size={size} color={color} />
 );
 
@@ -138,7 +138,7 @@ export const UprightRubyGem = ({ size = DEFAULT_SIZE, color = "#CC0000" }) => (
 
 /** Helper to retrieve standard authentic brand colors for technologies */
 export function getTechColor(name = "") {
-  if (!name) return "#E2C799";
+  if (!name) return "#7C8CFF";
   const n = name.toLowerCase();
   if (n.includes("linkedin")) return "#0A66C2";
   if (n.includes("github")) return "#E6EDF3";
@@ -182,11 +182,11 @@ export function getTechColor(name = "") {
   if (n.includes("hotwire")) return "#F06292";
   if (n.includes("stimulus")) return "#4DB6AC";
   if (n.includes("websocket") || n.includes("cable")) return "#FFC107";
-  if (n.includes("architecture")) return "#E2C799";
+  if (n.includes("architecture")) return "#7C8CFF";
   if (n.includes("integration")) return "#00BCD4";
   if (n.includes("payment")) return "#4CAF50";
   if (n.includes("auth")) return "#9C27B0";
-  return "#E2C799";
+  return "#7C8CFF";
 }
 
 /** Render authentic, vibrant, brand-colored icons for any tech name */

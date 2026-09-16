@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import resumeData from "../../utils/resumeData";
 import C, { alpha } from "../../theme";
 import { IconExternal } from "../Icons";
-import { FadeUp, Section } from "../UI";
-import { Coverflow } from "../Coverflow";
+import { Section } from "../UI";
 
 const CLAMP_LINES = 5;
 
@@ -27,8 +26,8 @@ function TestimonialModal({ t, onClose }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.7)",
-        backdropFilter: "blur(4px)",
+        background: "rgba(4,5,7,0.55)",
+        backdropFilter: "blur(10px) saturate(140%)", WebkitBackdropFilter: "blur(10px) saturate(140%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -39,12 +38,11 @@ function TestimonialModal({ t, onClose }) {
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
+        className="glass-heavy"
         initial={{ opacity: 0, rotateY: 180, scale: 0.6 }}
         animate={{ opacity: 1, rotateY: 0, scale: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          background: C.bg || "#0d0d0d",
-          border: `1px solid ${alpha(C.copper, "30")}`,
           borderRadius: 16,
           maxWidth: 560,
           width: "100%",
@@ -52,7 +50,6 @@ function TestimonialModal({ t, onClose }) {
           overflowY: "auto",
           padding: "40px 36px 32px",
           position: "relative",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
         }}
@@ -88,7 +85,7 @@ function TestimonialModal({ t, onClose }) {
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
-            <p style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, color: C.primary, fontSize: 15, margin: "0 0 4px" }}>{t.author}</p>
+            <p style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, color: C.primary, fontSize: 15, margin: "0 0 4px" }}>{t.author}</p>
             <p style={{ fontSize: 12, fontFamily: "'JetBrains Mono',monospace", color: C.secondary, margin: 0 }}>{t.title}</p>
           </div>
           {t.url && (
@@ -122,7 +119,9 @@ function TestimonialModal({ t, onClose }) {
   );
 }
 
-function TestimonialCard({ t, isActive, onExpand }) {
+// One large quote at a time, crossfaded — not a grid or carousel of cards.
+// A row of small identity buttons underneath switches who's speaking.
+function QuoteDisplay({ t, onExpand }) {
   const [isLong, setIsLong] = useState(false);
   const textRef = useRef(null);
 
@@ -132,36 +131,27 @@ function TestimonialCard({ t, isActive, onExpand }) {
       const maxHeight = lineHeight * CLAMP_LINES;
       setIsLong(textRef.current.scrollHeight > maxHeight + 2);
     }
-  }, []);
+  }, [t]);
 
   return (
-    <div
-      style={{
-        background: C.surface,
-        border: `1px solid ${isActive ? `${alpha(C.copper, "45")}` : C.border}`,
-        borderRadius: C.radius,
-        boxShadow: isActive ? "0 24px 56px rgba(0,0,0,0.42)" : "0 8px 24px rgba(0,0,0,0.25)",
-        padding: 32,
-        height: 380,
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        overflow: "hidden",
-      }}
+    <motion.div
+      key={t.author}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div style={{ position: "absolute", top: 12, right: 20, fontSize: 72, color: `${alpha(C.copper, "09")}`, fontFamily: "Georgia, serif", lineHeight: 1, userSelect: "none" }}>
-        "
-      </div>
-
       <p
         ref={textRef}
         style={{
-          fontSize: 14,
-          color: `${alpha(C.primary, "CC")}`,
-          lineHeight: 1.85,
-          fontStyle: "italic",
-          marginBottom: 10,
-          position: "relative",
+          fontFamily: "'Inter',sans-serif",
+          fontSize: "clamp(20px,2.6vw,30px)",
+          fontWeight: 500,
+          color: C.primary,
+          lineHeight: 1.45,
+          letterSpacing: "-0.01em",
+          marginBottom: 24,
+          maxWidth: 760,
           display: "-webkit-box",
           WebkitBoxOrient: "vertical",
           WebkitLineClamp: CLAMP_LINES,
@@ -171,62 +161,41 @@ function TestimonialCard({ t, isActive, onExpand }) {
         "{t.quote}"
       </p>
 
-      {isLong && isActive && (
+      {isLong && (
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onExpand();
-          }}
+          onClick={onExpand}
           style={{
-            alignSelf: "flex-start",
             background: "none",
             border: "none",
             padding: 0,
-            marginBottom: 20,
-            fontSize: 11,
+            marginBottom: 24,
+            fontSize: 12,
             fontFamily: "'JetBrains Mono',monospace",
             color: C.accentText,
             cursor: "pointer",
-            textDecoration: "underline",
-            textUnderlineOffset: 3,
           }}
         >
-          read full testimonial →
+          Read full testimonial →
         </button>
       )}
 
-      <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ minWidth: 0 }}>
-          <p style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, color: C.primary, fontSize: 14, margin: "0 0 4px" }}>{t.author}</p>
-          <p style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: C.secondary, margin: 0, lineHeight: 1.5 }}>{t.title}</p>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <p style={{ fontFamily: "'Inter',sans-serif", fontWeight: 600, color: C.primary, fontSize: 15, margin: "0 0 2px" }}>{t.author}</p>
+          <p style={{ fontSize: 12, fontFamily: "'JetBrains Mono',monospace", color: C.secondary, margin: 0 }}>{t.title}</p>
         </div>
-        {t.url && isActive && (
+        {t.url && (
           <a
             href={t.url}
             target="_blank"
             rel="noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              fontSize: 11,
-              color: C.accentText,
-              textDecoration: "none",
-              border: `1px solid ${alpha(C.copper, "40")}`,
-              borderRadius: 8,
-              padding: "6px 10px",
-              flexShrink: 0,
-              whiteSpace: "nowrap",
-            }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: C.secondary, textDecoration: "none" }}
           >
-            {t.type === "post" && "view post"}
-            {t.type === "profile" && "view profile"}
-            <IconExternal size={11} />
+            {t.type === "post" ? "view post" : "view profile"} <IconExternal size={11} />
           </a>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -246,22 +215,44 @@ export function TestimonialsSection() {
   }, [localTestimonials]);
 
   const testimonials = [...localTestimonials, ...resumeData.testimonials];
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [index, setIndex] = useState(0);
+  const [expanded, setExpanded] = useState(false);
+  const active = testimonials[index];
 
   return (
-    <Section id="testimonials" label="Social Proof" title="What They Say" subtitle="From people who worked with me directly. Click a card or use the arrows to browse." tinted watermark="PROOF">
-      <FadeUp>
-        <Coverflow
-          items={testimonials}
-          cardWidth={340}
-          height={400}
-          renderCard={(t, { isActive }) => <TestimonialCard t={t} isActive={isActive} onExpand={() => setActiveIndex(testimonials.indexOf(t))} />}
-        />
-      </FadeUp>
+    <Section id="testimonials" label="06 / People" title="What They Say" subtitle="From people who worked with me directly." tinted watermark="PROOF">
+      <div style={{ minHeight: 220 }}>
+        <AnimatePresence mode="wait">
+          <QuoteDisplay key={index} t={active} onExpand={() => setExpanded(true)} />
+        </AnimatePresence>
+      </div>
 
-      {activeIndex !== null && (
-        <TestimonialModal t={testimonials[activeIndex]} onClose={() => setActiveIndex(null)} />
-      )}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 40, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
+        {testimonials.map((t, i) => (
+          <button
+            key={t.author + i}
+            onClick={() => setIndex(i)}
+            aria-label={`Show testimonial from ${t.author}`}
+            aria-current={i === index}
+            style={{
+              padding: "6px 14px",
+              borderRadius: 100,
+              border: `1px solid ${i === index ? C.secondary : C.border}`,
+              background: "none",
+              color: i === index ? C.primary : C.muted,
+              fontSize: 12,
+              fontFamily: "'Inter',sans-serif",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              transition: "border-color 0.2s, color 0.2s",
+            }}
+          >
+            {t.author}
+          </button>
+        ))}
+      </div>
+
+      {expanded && <TestimonialModal t={active} onClose={() => setExpanded(false)} />}
     </Section>
   );
 }

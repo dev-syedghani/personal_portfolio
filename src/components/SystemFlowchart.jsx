@@ -215,7 +215,7 @@ export default function SystemFlowchart() {
                   <div
                     key={cluster.id}
                     ref={el => { if (el) clusterRefs.current[cluster.id] = el; }}
-                    style={{ padding: 8, borderRadius: C.radius, border: `1px solid ${lit ? GOLD : C.border}`, background: lit ? "rgba(226,199,153,0.04)" : C.surface, gridColumn: cluster.id === "payments" ? "1 / -1" : "auto" }}
+                    style={{ padding: 8, borderRadius: C.radius, border: `1px solid ${lit ? GOLD : C.border}`, background: lit ? "rgba(124,140,255,0.05)" : C.surface, gridColumn: cluster.id === "payments" ? "1 / -1" : "auto" }}
                   >
                     <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: "0.14em", color: lit ? GOLD : C.secondary, margin: "0 0 8px", fontWeight: 600 }}>{cluster.label}</p>
                     {renderClusterItems(cluster, 44, 13, 22)}
@@ -282,7 +282,7 @@ export default function SystemFlowchart() {
                     key={cluster.id}
                     d={path}
                     fill="none"
-                    stroke={active ? GOLD : "rgba(226,199,153,0.14)"}
+                    stroke={active ? GOLD : "rgba(124,140,255,0.16)"}
                     strokeWidth={active ? 2 : 1}
                     strokeLinecap="round"
                     filter={active ? "url(#flow-glow)" : undefined}
@@ -318,7 +318,7 @@ export default function SystemFlowchart() {
                       padding: "10px 12px",
                       borderRadius: C.radius,
                       border: `1px solid ${lit ? GOLD : C.border}`,
-                      background: lit ? "rgba(226,199,153,0.06)" : C.surface,
+                      background: lit ? "rgba(124,140,255,0.07)" : C.surface,
                       boxShadow: lit ? `0 0 18px ${GOLD_GLOW}` : "0 4px 12px rgba(0,0,0,0.4)",
                       transition: "border-color 0.25s, box-shadow 0.25s, background 0.25s",
                     }}
@@ -394,7 +394,7 @@ export default function SystemFlowchart() {
                 fontFamily: "'JetBrains Mono', monospace",
                 border: `1px solid ${isAuth ? GOLD : C.border}`,
                 color: isAuth ? GOLD : C.secondary,
-                background: isAuth ? "rgba(226,199,153,0.04)" : "transparent",
+                background: isAuth ? "rgba(124,140,255,0.05)" : "transparent",
                 marginBottom: 12,
                 width: "fit-content",
               }}
@@ -420,7 +420,7 @@ export default function SystemFlowchart() {
           >
             <IconForTech name={selected.name} size={22} colored={true} />
           </div>
-          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 700, color: C.primary, margin: 0, lineHeight: 1.1 }}>
+          <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 20, fontWeight: 700, color: C.primary, margin: 0, lineHeight: 1.1 }}>
             {selected.name}
           </h3>
         </div>
@@ -437,7 +437,7 @@ export default function SystemFlowchart() {
             padding: "12px 14px",
             borderRadius: C.radius,
             border: `1px dashed ${C.border}`,
-            background: "rgba(226,199,153,0.04)",
+            background: "rgba(124,140,255,0.05)",
             marginBottom: 18,
           }}
         >

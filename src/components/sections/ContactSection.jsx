@@ -82,7 +82,7 @@ export function ContactSection() {
   };
 
   return (
-    <Section id="contact" label="Contact" title="Let's Work Together" subtitle="I respond within 24 hours. No middlemen — just me." tinted className="crosshair-grid" watermark="CONTACT">
+    <Section id="contact" label="08 / Contact" title="Let's Work Together" subtitle="I respond within 24 hours. No middlemen — just me." tinted watermark="CONTACT">
       <div className="contact-grid">
         <FadeUp>
           <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
@@ -169,7 +169,7 @@ export function ContactSection() {
         </FadeUp>
 
         <FadeUp delay={120}>
-          <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 18, padding: 36, boxShadow: "0 8px 32px rgba(0,0,0,0.28)", position: "relative", overflow: "hidden" }}>
+          <div className="glass" style={{ borderRadius: 20, padding: 36, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${alpha(C.copper, "60")}, transparent)` }} />
             <form id="contact-form" onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -237,17 +237,16 @@ export function ContactSection() {
                 type="submit"
                 disabled={state === "sending"}
                 style={{
-                  padding: "14px 28px",
-                  borderRadius: C.radius,
+                  padding: "13px 28px",
+                  borderRadius: 8,
                   border: "none",
                   cursor: state === "sending" ? "default" : "pointer",
                   fontSize: 15,
-                  fontWeight: 700,
-                  fontFamily: "'Space Grotesk',sans-serif",
-                  background: state === "success" ? `${alpha(C.sage, "20")}` : state === "error" ? `${alpha(C.copperDeep, "20")}` : `linear-gradient(135deg, ${C.copper}, ${C.copperDeep})`,
-                  color: state === "success" ? C.sage : state === "error" ? C.goldDeep : C.onGold,
-                  boxShadow: state === "idle" ? "0 6px 24px rgba(0,0,0,0.35)" : "none",
-                  transition: "all 0.3s",
+                  fontWeight: 600,
+                  fontFamily: "'Inter',sans-serif",
+                  background: state === "success" ? `${alpha(C.sage, "20")}` : state === "error" ? `${alpha(C.copperDeep, "20")}` : C.primary,
+                  color: state === "success" ? C.sage : state === "error" ? C.goldDeep : C.bg,
+                  transition: "opacity 0.2s",
                 }}
               >
                 {state === "idle" && "Send Message →"}

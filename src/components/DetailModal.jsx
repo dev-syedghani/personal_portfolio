@@ -20,8 +20,8 @@ export function DetailModal({ icon, eyebrow, title, subtitle, children, links, o
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.7)",
-        backdropFilter: "blur(4px)",
+        background: "rgba(4,5,7,0.55)",
+        backdropFilter: "blur(10px) saturate(140%)", WebkitBackdropFilter: "blur(10px) saturate(140%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -32,12 +32,11 @@ export function DetailModal({ icon, eyebrow, title, subtitle, children, links, o
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
+        className="glass-heavy"
         initial={{ opacity: 0, rotateY: 180, scale: 0.6 }}
         animate={{ opacity: 1, rotateY: 0, scale: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          background: C.bg || "#0d0d0d",
-          border: `1px solid ${alpha(C.copper, "30")}`,
           borderRadius: 18,
           maxWidth: 520,
           width: "100%",
@@ -45,7 +44,6 @@ export function DetailModal({ icon, eyebrow, title, subtitle, children, links, o
           overflowY: "auto",
           padding: "36px 32px",
           position: "relative",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
         }}
       >
         <button
@@ -93,7 +91,7 @@ export function DetailModal({ icon, eyebrow, title, subtitle, children, links, o
             {eyebrow}
           </p>
         )}
-        <h3 style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 22, fontWeight: 700, color: C.primary, margin: "0 0 8px" }}>{title}</h3>
+        <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: 22, fontWeight: 700, color: C.primary, margin: "0 0 8px" }}>{title}</h3>
         {subtitle && <p style={{ fontSize: 14, color: C.accentText, fontWeight: 600, marginBottom: 20 }}>{subtitle}</p>}
 
         <div style={{ marginBottom: links && links.length > 0 ? 24 : 0 }}>{children}</div>

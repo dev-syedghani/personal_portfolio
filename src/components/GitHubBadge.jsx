@@ -93,7 +93,7 @@ export default function GitHubBadge() {
           />
         </div>
 
-        <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, color: C.primary, fontSize: 15, textAlign: "center" }}>
+        <div style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, color: C.primary, fontSize: 15, textAlign: "center" }}>
           {profile?.name || GITHUB_USERNAME}
         </div>
         <div style={{ fontFamily: "'JetBrains Mono',monospace", color: C.secondary, fontSize: 12 }}>

@@ -48,6 +48,83 @@ const GH = {
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// Real GitHub stats — stars, total commits, PRs, issues, contribution grade,
+// current/longest streak, top languages — that the contribution calendar
+// above doesn't surface on its own. These come from anuraghazra/github-readme-stats
+// and github-readme-streak-stats, widely-used public services that query the
+// real GitHub API server-side for the given username and render an SVG; no
+// token/backend needed on a static GitHub Pages deploy, and no number here
+// is invented — it's whatever those services report live.
+//
+// The official github-readme-stats.vercel.app instance is presently returning
+// "DEPLOYMENT_PAUSED" (503) — a known, long-running issue with that free-tier
+// host, not specific to this username. `srcs` is an ordered fallback chain:
+// each card tries the official host first (most trustworthy long-term), then
+// a working community mirror, and only shows "unavailable" if every source
+// in the chain fails — matching the same primary→fallback→graceful-empty
+// pattern already used for LeetCode stats above.
+// These SVGs are drawn by the remote service at a fixed native size (~495×195
+// for the stats/streak cards) — an <img> at width:100% inside a flex panel
+// that's allowed to *grow* stretches the whole SVG, text and all, to fill
+// whatever width the row happens to have. Capping max-width near the native
+// size (and never letting the parent flex-grow past its basis) keeps these
+// compact and dense like the real github.com widgets, not blown up 3x.
+function GitHubStatCard({ srcs, alt, maxWidth = 400 }) {
+  const [attempt, setAttempt] = useState(0);
+  if (attempt >= srcs.length) {
+    return (
+      <div style={{ maxWidth, minHeight: 100, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: C.muted, fontFamily: "'JetBrains Mono',monospace", textAlign: "center", padding: 16 }}>
+        {alt} unavailable — GitHub stats service unreachable.
+      </div>
+    );
+  }
+  return (
+    <img
+      key={attempt}
+      src={srcs[attempt]}
+      alt={alt}
+      loading="lazy"
+      style={{ display: "block", width: "100%", maxWidth, height: "auto", margin: "0 auto" }}
+      onError={() => setAttempt((a) => a + 1)}
+    />
+  );
+}
+
+function GitHubStatsCards({ username }) {
+  // Custom hex params (not a preset `theme=`) so the cards match the site's
+  // own indigo/teal glass palette exactly instead of a canned GitHub theme.
+  const common = "hide_border=true&bg_color=00000000&title_color=8B8CFF&text_color=A8AFBA&icon_color=63D7CA";
+  const statsUrls = [
+    `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&${common}&count_private=true`,
+    `https://github-readme-stats-eight-theta.vercel.app/api?username=${username}&show_icons=true&${common}&count_private=true`,
+  ];
+  const streakUrls = [
+    `https://github-readme-streak-stats.herokuapp.com/?user=${username}&hide_border=true&background=00000000&stroke=252A32&ring=8B8CFF&fire=63D7CA&currStreakNum=F5F7FA&sideNums=A8AFBA&currStreakLabel=8B8CFF&sideLabels=A8AFBA&dates=686F7A`,
+  ];
+  const langsUrls = [
+    `https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&langs_count=8&${common}`,
+    `https://github-readme-stats-eight-theta.vercel.app/api/top-langs/?username=${username}&layout=compact&langs_count=8&${common}`,
+  ];
+
+  // A fragment, not a wrapping div — these three cards need to sit as direct
+  // siblings of the LeetCode card in the caller's own flex-wrap row (one flat
+  // row that wraps as a whole), not as a single nested flex item that the
+  // outer row can't size or wrap around correctly.
+  return (
+    <>
+      <div className="glass" style={{ borderRadius: 16, padding: 16, flex: "0 1 380px", overflow: "hidden", display: "flex", justifyContent: "center" }}>
+        <GitHubStatCard srcs={statsUrls} alt="GitHub stats" maxWidth={360} />
+      </div>
+      <div className="glass" style={{ borderRadius: 16, padding: 16, flex: "0 1 380px", overflow: "hidden", display: "flex", justifyContent: "center" }}>
+        <GitHubStatCard srcs={streakUrls} alt="GitHub streak stats" maxWidth={360} />
+      </div>
+      <div className="glass" style={{ borderRadius: 16, padding: 16, flex: "0 1 300px", overflow: "hidden", display: "flex", justifyContent: "center" }}>
+        <GitHubStatCard srcs={langsUrls} alt="Most used languages" maxWidth={280} />
+      </div>
+    </>
+  );
+}
+
 // Lighten (positive) or darken (negative) a #rrggbb by a flat step per channel.
 // Used to derive a tile's lit top edge and shaded lower edges from its one level
 // colour, so the cap reads as a surface catching a light from above rather than a
@@ -106,15 +183,17 @@ const DAY_GUTTER = 30;
 
 // What a rendered board occupies vertically. Reserved by the loading and error
 // states too, so the panel keeps one height from first paint onwards.
-const BOARD_MIN_H = 264;
+const BOARD_MIN_H = 200;
 
 // Cells are sized to fill whatever width the panel has rather than pinned at
 // GitHub's 12px, so a year always spans the panel exactly and never needs to be
 // scrolled sideways. Bounded at both ends: below the floor a year is unreadable
 // confetti (and a phone genuinely can't fit 53 weeks, so there it scrolls after
-// all), above the ceiling the board stops looking like a contribution graph.
+// all), above the ceiling the board stops looking like a contribution graph —
+// lowered from 26 now that the panel sits beside LeetCode instead of spanning
+// the full section width, where a 26px ceiling produced an oversized board.
 const MIN_CELL = 9;
-const MAX_CELL = 26;
+const MAX_CELL = 15;
 const BASE_CELL = 12;
 
 // Everything about the 3D was tuned against a 12px cell, so the whole geometry is
@@ -532,20 +611,16 @@ export function GitHubSection() {
   const totalThisYear = ghData?.total ? Object.values(ghData.total).reduce((a, b) => a + b, 0) : null;
 
   return (
-    <Section id="github" label="Activity" title="GitHub & LeetCode" watermark="ACTIVITY">
+    <Section id="github" label="04 / Activity" title="Building Consistently" watermark="ACTIVITY">
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
-        {/* Contribution heatmap + LeetCode side by side (stacked on narrow screens) */}
-        <div className="github-grid">
-          {/* GitHub Heatmap */}
-          <FadeUp delay={80}>
+        {/* Full-width calendar — everything else moved to the compact row below. */}
+        <FadeUp delay={80}>
             <div
+              className="glass"
               style={{
                 borderRadius: 16,
-                background: gh.panel,
-                border: `1px solid ${gh.line}`,
                 padding: "24px 28px",
-                boxShadow: "0 4px 20px var(--shadow-base)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
@@ -605,27 +680,23 @@ export function GitHubSection() {
                 <ContributionHeatmap key={year} contributions={contributions} totalThisYear={totalThisYear} year={year} />
               )}
             </div>
-          </FadeUp>
+        </FadeUp>
 
-          {/* LeetCode Stats */}
-          <FadeUp delay={140}>
-            <div
-              style={{
-                borderRadius: 16,
-                background: C.surface,
-                border: `1px solid ${C.border}`,
-                padding: "24px 28px",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.28)",
-                minWidth: 260,
-              }}
-            >
+        {/* Every other stat — LeetCode, stars/commits/PRs/issues/grade, streak,
+            top languages — as one row of compact cards below the full-size
+            calendar, instead of one of them (LeetCode) crowding the calendar's
+            own row while the rest sit further down. */}
+        <FadeUp delay={140}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+            <div className="glass" style={{ borderRadius: 16, padding: "20px 22px", flex: "0 1 300px" }}>
               <p style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", textTransform: "uppercase", letterSpacing: "0.14em", color: C.secondary, margin: "0 0 16px" }}>
                 LeetCode Stats
               </p>
               <LeetCodeStats stats={lcStats} loading={lcLoading} error={lcError} />
             </div>
-          </FadeUp>
-        </div>
+            <GitHubStatsCards username={GITHUB_USERNAME} />
+          </div>
+        </FadeUp>
       </div>
     </Section>
   );
