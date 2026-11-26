@@ -1,5 +1,5 @@
 // Syed Ghani — portfolio single source of truth (v3 — from updates.md)
-// Photo: /syed_ghani.jpg (real headshot in public/)
+// Photo: /syed_ghani.svg (real headshot in public/)
 
 const resumeData = {
   name: "Syed Ghani",
@@ -24,7 +24,7 @@ const resumeData = {
   linkedinUrl: "https://www.linkedin.com/in/syedmghani/",
   githubUrl: "https://github.com/dev-syedghani",
   rubygemsProfile: "https://rubygems.org/profiles/devsyedghani",
-  photo: "/syed_ghani.jpg",
+  photo: "/syed_ghani.svg",
 
   availability: {
     status: "Currently employed — open to the right opportunity",

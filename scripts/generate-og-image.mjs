@@ -33,7 +33,7 @@ async function main() {
   const { total, isLive } = await getLiveDownloadTotal();
   const displayDownloads = `${total.toLocaleString()}+`;
 
-  const photoSrc = `data:image/jpeg;base64,${fs.readFileSync(path.join(root, 'public', 'syed_ghani.jpg')).toString('base64')}`;
+  const photoSrc = `data:image/svg+xml;base64,${fs.readFileSync(path.join(root, 'public', 'syed_ghani.svg')).toString('base64')}`;
 
   const [spaceGroteskBold, interRegular, interSemiBold] = [
     'SpaceGrotesk-Bold.woff',
