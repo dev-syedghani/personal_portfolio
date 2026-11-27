@@ -1,11 +1,11 @@
 {
   "short_name": "Syed Ghani",
-  "name": "Syed Ghani — Software Engineer",
+  "name": "Syed Ghani \u2014 Software Engineer",
   "icons": [
     {
-      "src": "syed_ghani.svg",
-      "sizes": "192x192",
-      "type": "image/svg+xml"
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
     },
     {
       "src": "logo192.png",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#0a0e1a",
-  "background_color": "#0a0e1a"
+  "theme_color": "#070a09",
+  "background_color": "#070a09"
 }

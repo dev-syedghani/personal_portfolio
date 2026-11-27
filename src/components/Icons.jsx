@@ -33,6 +33,7 @@ import {
   SiRubyonrails,
   SiRuby,
   SiReact,
+  SiNextdotjs,
   SiSidekiq,
   SiVite,
   SiMui,
@@ -103,7 +104,7 @@ export const IconGlobe = ({ size = DEFAULT_SIZE, color = "#2196F3" }) => (
   <FaGlobeAmericas size={size} color={color} />
 );
 
-export const IconEducation = ({ size = DEFAULT_SIZE, color = "#7C8CFF" }) => (
+export const IconEducation = ({ size = DEFAULT_SIZE, color = "#6E97C2" }) => (
   <FaGraduationCap size={size} color={color} />
 );
 
@@ -136,15 +137,25 @@ export const UprightRubyGem = ({ size = DEFAULT_SIZE, color = "#CC0000" }) => (
   </svg>
 );
 
+// GitHub's and Next.js's marks are monochrome (no real "brand color" the way
+// LinkedIn blue is one), so a single hardcoded hex reads fine on one theme and
+// vanishes on the other — near-white is invisible on a light background,
+// near-black is invisible on a dark one. Pick per the live theme instead.
+function monochromeMarkColor() {
+  const isLight = typeof document !== "undefined" && document.documentElement.classList.contains("light");
+  return isLight ? "#181717" : "#E6EDF3";
+}
+
 /** Helper to retrieve standard authentic brand colors for technologies */
 export function getTechColor(name = "") {
-  if (!name) return "#7C8CFF";
+  if (!name) return "#6E97C2";
   const n = name.toLowerCase();
   if (n.includes("linkedin")) return "#0A66C2";
-  if (n.includes("github")) return "#E6EDF3";
+  if (n.includes("github")) return monochromeMarkColor();
   if (n.includes("whatsapp")) return "#25D366";
   if (n.includes("phone")) return "#4CAF50";
   if (n.includes("rails") || n.includes("ruby")) return "#CC0000";
+  if (n.includes("next")) return monochromeMarkColor();
   if (n.includes("react")) return "#61DAFB";
   if (n.includes("sidekiq")) return "#D32F2F";
   if (n.includes("vite")) return "#646CFF";
@@ -182,11 +193,11 @@ export function getTechColor(name = "") {
   if (n.includes("hotwire")) return "#F06292";
   if (n.includes("stimulus")) return "#4DB6AC";
   if (n.includes("websocket") || n.includes("cable")) return "#FFC107";
-  if (n.includes("architecture")) return "#7C8CFF";
+  if (n.includes("architecture")) return "#6E97C2";
   if (n.includes("integration")) return "#00BCD4";
   if (n.includes("payment")) return "#4CAF50";
   if (n.includes("auth")) return "#9C27B0";
-  return "#7C8CFF";
+  return "#6E97C2";
 }
 
 /** Render authentic, vibrant, brand-colored icons for any tech name */
@@ -204,6 +215,7 @@ export function IconForTech({ name = "", size = DEFAULT_SIZE, colored = true, co
   // Specific brand & tech mapping
   if (n.includes("rails 7") || n.includes("ruby on rails")) return <SiRubyonrails size={size} color={brandColor} />;
   if (n.includes("ruby")) return <UprightRubyGem size={size} color={brandColor} />;
+  if (n.includes("next")) return <SiNextdotjs size={size} color={brandColor} />;
   if (n.includes("react")) return <SiReact size={size} color={brandColor} />;
   if (n.includes("sidekiq")) return <SiSidekiq size={size} color={brandColor} />;
   if (n.includes("vite")) return <SiVite size={size} color={brandColor} />;

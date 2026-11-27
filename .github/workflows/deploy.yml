@@ -4,9 +4,10 @@ on:
   push:
     branches: [master]
   schedule:
-    # Daily rebuild so the live RubyGems download count baked into the OG
-    # image and meta description stays fresh even without a code push.
-    - cron: '0 6 * * *'
+    # Rebuild every 6 hours so both the GitHub contribution graph
+    # (scripts/fetch-contributions.mjs) and the live RubyGems download count
+    # baked into the OG image stay current with no push and no manual step.
+    - cron: '17 */6 * * *'
   workflow_dispatch:
 
 permissions:
