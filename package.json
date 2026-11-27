@@ -23,11 +23,13 @@
   "scripts": {
     "dev": "vite",
     "generate:og": "node scripts/generate-og-image.mjs",
-    "prebuild": "npm run generate:og",
+    "prebuild": "npm run contributions && npm run generate:og",
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "contributions": "node scripts/fetch-contributions.mjs",
+    "generate:icons": "node scripts/generate-icons.mjs"
   },
   "browserslist": {
     "production": [
