@@ -2,22 +2,27 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
 import { FiArrowRight, FiArrowUpRight, FiPlus } from "react-icons/fi";
 import resumeData from "../../utils/resumeData";
-import { getScreenshotUrl } from "../../utils/screenshot";
+import previews from "../../data/previews.json";
 import { AutoProjectImage } from "../../components/AutoProjectImage";
 import { Reveal, SectionHead } from "../parts";
 import { usePointerFine } from "../../hooks/usePointerFine";
 import { unlock } from "../achievements";
-import { ALL_PROJECTS, FEATURED_PROJECTS, ARCHIVE_HASH } from "../projects";
+import { GALLERY, FEATURED_PROJECTS, ARCHIVE_HASH } from "../projects";
 
 // The home page shows only the featured slice; the rest live on the archive
 // page, so this section stays scannable instead of a 14-row wall.
 const projects = FEATURED_PROJECTS;
 const EASE = [0.22, 1, 0.36, 1];
+// Keeps an open row scannable; the archive card carries the full list.
+const METRICS_SHOWN = 5;
 
+// Local screenshots only (scripts/capture-previews.mjs): a live screenshot
+// service is slow, rate-limited, and happily captures login walls and geo-blocks.
 function Screenshot({ project }) {
   const [failed, setFailed] = useState(false);
-  if (!project.url || failed) return <AutoProjectImage name={project.name} tech={project.tech} />;
-  return <img src={getScreenshotUrl(project.url)} alt={`${project.name} preview`} loading="lazy" onError={() => setFailed(true)} />;
+  const src = previews[project.name] ?? (project.image?.startsWith("/") ? project.image : null);
+  if (!src || failed) return <AutoProjectImage name={project.name} tech={project.tech} label={project.group} stats={project.highlights} />;
+  return <img src={src} alt={`${project.name} preview`} loading="lazy" onError={() => setFailed(true)} />;
 }
 
 /** A screenshot card that trails the cursor while it's over the project list. */
@@ -78,9 +83,9 @@ export function Work() {
       <div className="wrap">
         <SectionHead
           eyebrow="Selected work"
-          title={`${ALL_PROJECTS.length} builds,`}
-          accent="owned end to end."
-          lead="Client platforms and personal work — e-commerce, PRM, fintech, ed-tech and college athletics, often as the sole or lead engineer. Hover a project for a peek, and click it for the details."
+          title={`${GALLERY.length} builds,`}
+          accent="and the numbers behind them."
+          lead="E-commerce, PRM, fintech, ed-tech and college athletics — usually as the only engineer, or the one holding the pager. Open any row for the problem, what I built and what changed."
         />
 
         <div className="work-list" onPointerLeave={() => setHovered(null)}>
@@ -115,7 +120,7 @@ export function Work() {
                   <span className="mono" style={{ color: "var(--dim)", fontSize: 12 }}>{String(i + 1).padStart(2, "0")}</span>
                   <span style={{ minWidth: 0 }}>
                     <h3 className="work-title">{p.name}</h3>
-                    <span style={{ display: "block", color: "var(--muted)", fontSize: 14, marginTop: 6 }}>{p.description}</span>
+                    <span className="work-desc" style={{ color: "var(--muted)", fontSize: 14, marginTop: 6 }}>{p.description}</span>
                   </span>
                   <span className="work-meta">
                     {(p.tech ?? []).slice(0, 3).map((t) => (
@@ -142,12 +147,17 @@ export function Work() {
                           {(p.problem || p.description) && (
                             <p style={{ color: "var(--soft)", fontSize: 15, lineHeight: 1.65, margin: "0 0 18px" }}>{p.problem || p.description}</p>
                           )}
-                          {(p.metrics ?? []).map((m, mi) => (
+                          {(p.metrics ?? []).slice(0, METRICS_SHOWN).map((m, mi) => (
                             <div className="metric" key={mi}>
                               <b>{String(mi + 1).padStart(2, "0")}</b>
                               <span>{m}</span>
                             </div>
                           ))}
+                          {p.metrics?.length > METRICS_SHOWN && (
+                            <a href={ARCHIVE_HASH} className="work-more-results cursor-target" data-cursor-label="see all">
+                              +{p.metrics.length - METRICS_SHOWN} more results in the archive <FiArrowRight size={13} />
+                            </a>
+                          )}
                           {p.url && (
                             <a href={p.url} target="_blank" rel="noreferrer" className="btn btn-ghost cursor-target" data-cursor-label="open" style={{ marginTop: 22, height: 40, fontSize: 13.5 }}>
                               Visit live site <FiArrowUpRight />
@@ -166,14 +176,14 @@ export function Work() {
           })}
         </div>
 
-        {ALL_PROJECTS.length > projects.length && (
+        {GALLERY.length > projects.length && (
           <Reveal delay={0.08}>
             <a
               href={ARCHIVE_HASH}
               className="btn btn-ghost cursor-target work-more"
               data-cursor-label="see all"
             >
-              Show all {ALL_PROJECTS.length} projects <FiArrowRight />
+              Show all {GALLERY.length} projects <FiArrowRight />
             </a>
           </Reveal>
         )}

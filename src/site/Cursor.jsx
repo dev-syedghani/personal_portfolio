@@ -37,10 +37,10 @@ function CursorLayer() {
   const dot = useRef(null);
   const ring = useRef(null);
   const label = useRef(null);
-  const accent = useRef("#34d399");
+  const accent = useRef("#e8344a");
 
   useEffect(() => {
-    accent.current = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#34d399";
+    accent.current = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#e8344a";
   }, [mode]);
 
   useEffect(() => {
@@ -75,7 +75,18 @@ function CursorLayer() {
       }
     };
 
+    // The loop sleeps once everything has caught up with the pointer and the
+    // trail has faded; any input wakes it. An idle cursor costs nothing.
+    let raf = 0;
+    let drewTrail = false;
+    const wake = () => {
+      if (raf) return;
+      s.last = performance.now();
+      raf = requestAnimationFrame(tick);
+    };
+
     const onMove = (e) => {
+      wake();
       s.mx = e.clientX;
       s.my = e.clientY;
       if (!s.visible) {
@@ -88,6 +99,7 @@ function CursorLayer() {
       setKind(kind, text);
     };
     const onDown = (e) => {
+      wake();
       s.down = true;
       if (s.kind === "text") return;
       const r = document.createElement("span");
@@ -100,17 +112,23 @@ function CursorLayer() {
         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       }).onfinish = () => r.remove();
     };
-    const onUp = () => (s.down = false);
-    const onLeave = () => (s.visible = false);
+    const onUp = () => {
+      wake();
+      s.down = false;
+    };
+    const onLeave = () => {
+      wake();
+      s.visible = false;
+    };
     const onScroll = () => {
+      wake();
       // Content moves under a still pointer: re-check what's beneath it.
       const el = document.elementFromPoint(s.mx, s.my);
       const { kind, label: text } = kindOf(el);
       setKind(kind, text);
     };
 
-    let raf;
-    const tick = (now) => {
+    function tick(now) {
       const dt = Math.min(0.05, (now - s.last) / 1000);
       s.last = now;
       const k = 1 - Math.pow(0.0008, dt); // frame-rate independent follow
@@ -145,10 +163,13 @@ function CursorLayer() {
       lab.style.opacity = showLabel.toFixed(3);
       lab.style.transform = `translate3d(${s.mx + 14}px, ${s.my + 12}px, 0) scale(${0.85 + showLabel * 0.15})`;
 
-      // Comet trail: recent points drawn as a tapering, fading stroke.
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      // Comet trail: recent points drawn as a tapering, fading stroke. The
+      // full-screen clear only happens while there is (or just was) a trail.
       s.pts = s.pts.filter((p) => now - p.t < TRAIL_MS);
+      if (drewTrail) ctx.clearRect(0, 0, innerWidth, innerHeight);
+      drewTrail = false;
       if (s.pts.length > 2 && s.kind !== "text" && s.visible) {
+        drewTrail = true;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.strokeStyle = accent.current;
@@ -168,8 +189,16 @@ function CursorLayer() {
         ctx.globalAlpha = 1;
         ctx.shadowBlur = 0;
       }
-      raf = requestAnimationFrame(tick);
-    };
+
+      const settled =
+        !drewTrail &&
+        Math.abs(s.mx - s.rx) < 0.25 &&
+        Math.abs(s.my - s.ry) < 0.25 &&
+        Math.abs(target - s.size) < 0.2 &&
+        Math.abs(wantStretch - s.stretch) < 0.004 &&
+        Math.abs((s.visible ? 1 : 0) - s.shown) < 0.005;
+      raf = settled ? 0 : requestAnimationFrame(tick);
+    }
     raf = requestAnimationFrame(tick);
 
     window.addEventListener("pointermove", onMove, { passive: true });

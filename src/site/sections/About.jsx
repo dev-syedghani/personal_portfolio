@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
-import { FiArrowUpRight, FiBookOpen, FiClock, FiCoffee, FiCreditCard, FiGlobe, FiHeadphones, FiLayers, FiMapPin, FiMoon, FiPhoneCall, FiRefreshCw, FiSun, FiUploadCloud, FiUsers, FiZap } from "react-icons/fi";
+import { FiArrowUpRight, FiBookOpen, FiClock, FiCoffee, FiGitPullRequest, FiGlobe, FiHeadphones, FiLayers, FiMapPin, FiMoon, FiPhoneCall, FiRefreshCw, FiSun, FiShuffle, FiUploadCloud, FiZap } from "react-icons/fi";
 import resumeData from "../../utils/resumeData";
 import SpotlightCard from "../../components/reactbits/SpotlightCard";
 import CountUp from "../../components/reactbits/CountUp";
 import DecryptedText from "../../components/reactbits/DecryptedText";
-import { Reveal, SectionHead } from "../parts";
+import { Reveal, SectionHead, Tilt } from "../parts";
 import { useSpot } from "./Glance";
 import { usePointerFine } from "../../hooks/usePointerFine";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
@@ -42,36 +42,6 @@ function ScrubText({ text, className }) {
 }
 
 /* ── 3D tilt that follows the pointer ──────────────────────────────────── */
-
-function Tilt({ children, max = 7 }) {
-  const fine = usePointerFine();
-  const reduced = usePrefersReducedMotion();
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
-  const rotateX = useSpring(rx, { stiffness: 220, damping: 18 });
-  const rotateY = useSpring(ry, { stiffness: 220, damping: 18 });
-  const on = fine && !reduced;
-
-  const move = (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    rx.set(-((e.clientY - r.top) / r.height - 0.5) * max * 2);
-    ry.set(((e.clientX - r.left) / r.width - 0.5) * max * 2);
-  };
-  const reset = () => {
-    rx.set(0);
-    ry.set(0);
-  };
-
-  return (
-    <motion.div
-      style={{ height: "100%", rotateX: on ? rotateX : 0, rotateY: on ? rotateY : 0, transformPerspective: 900 }}
-      onPointerMove={on ? move : undefined}
-      onPointerLeave={on ? reset : undefined}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 /* ── Day/night card for local (Lahore) time ────────────────────────────── */
 
@@ -148,7 +118,7 @@ const FACTS = [
   "I work GMT+5, with 4–5 hours of daily overlap with EU teams.",
   "I ran a zero-data-loss billing migration from Paddle to Chargebee.",
   "I studied Computer Science at UET Lahore.",
-  "I built four mini-games for this site. Scroll down and set a high score.",
+  "There are four mini-games further down the page. Set a high score.",
   "There's a hidden terminal on this page. Press ` to open it.",
 ];
 
@@ -185,10 +155,10 @@ function FactRoulette() {
 /* ── Section ───────────────────────────────────────────────────────────── */
 
 const STATS = [
-  { to: 4, suffix: "+", label: "Years in production", icon: FiClock },
-  { to: 6, suffix: "+", label: "SaaS platforms shipped", icon: FiLayers },
-  { to: 500, prefix: "$", suffix: "K+", label: "GMV through my payment code", icon: FiCreditCard },
-  { to: 2000, suffix: "+", separator: ",", label: "Active users served", icon: FiUsers },
+  { to: 2, suffix: "+", label: "Years in production", icon: FiClock },
+  { to: 7, label: "SaaS platforms shipped", icon: FiLayers },
+  { to: 148, label: "PRs shipped in one quarter", icon: FiGitPullRequest },
+  { to: 5, label: "Vendor integrations owned", icon: FiShuffle },
 ];
 
 // Derived from the résumé's ongoing roles so this block and the Experience
@@ -210,24 +180,23 @@ const FACT_CHIPS = [
 ];
 
 const BIO =
-  "I'm a full-stack engineer who likes owning the whole thing: the *schema,* the *API,* the *interface* and the *deploy.* I've shipped across *seven* *production* *SaaS* *products* in PRM, fintech, ed-tech, e-commerce and college athletics — including one I built *solo,* from zero to production.";
+  "I'm a Rails engineer who gets handed the parts of a business that *money* *runs* *through* — orders, billing, inventory, the integrations nobody wants to touch — and makes them run *on* *their* *own.* Seven production SaaS products so far, one of them built *solo,* from zero to production.";
 
 export function About() {
   const SPOT = useSpot();
-  const learning = resumeData.skills.currentlyLearning?.map((s) => s.name) ?? [];
 
   return (
     <section className="sec" id="about">
       <div className="wrap">
-        <SectionHead eyebrow="About" title="Hi, I'm Syed." accent="I build software that ships." />
+        <SectionHead eyebrow="About" title="Salaam, I'm Syed." accent="I make the messy parts run themselves." />
 
         <div className="about-grid">
           <div className="about-story">
             <ScrubText text={BIO} className="about-bio" />
             <Reveal delay={0.05}>
               <p className="about-sub">
-                Today I&apos;m a Senior Software Engineer at Stackworx, working on Midway Sports&apos; Rails + Shopify platform — inventory sync,
-                the out-of-stock lifecycle and returns. I care about clear ownership and integrations that survive real traffic.
+                Right now I&apos;m a Senior Software Engineer at Stackworx and the primary engineer on Midway Sports&apos; Rails + Shopify
+                platform — 148 PRs in a quarter, five vendor feeds, and a bot that places real wholesale orders while everyone sleeps.
               </p>
             </Reveal>
             <Reveal delay={0.1}>
@@ -286,14 +255,6 @@ export function About() {
                     </a>
                   ))}
                 </div>
-                {learning.length > 0 && (
-                  <div className="now-learning">
-                    <span className="mono">learning →</span>
-                    {learning.map((l) => (
-                      <span key={l} className="chip" style={{ fontSize: 12 }}>{l}</span>
-                    ))}
-                  </div>
-                )}
               </SpotlightCard>
             </Reveal>
 

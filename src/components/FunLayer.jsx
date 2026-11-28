@@ -9,8 +9,8 @@ import { unlock } from "../site/achievements";
 // Sparks are drawn on a canvas, so they need real colours rather than the
 // var(--accent) tokens. These track the accent ramp in index.css per theme.
 const SPARK_COLORS = {
-  dark: ["#34D399", "#6EE7B7", "#ECEFED"],
-  light: ["#059669", "#10B981", "#111513"],
+  dark: ["#FF4258", "#FF8A3D", "#F7EEEC"],
+  light: ["#CC1530", "#E8590C", "#1A1110"],
 };
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
@@ -32,8 +32,8 @@ export function FunLayer({ children }) {
     window.__rmGreeted = true;
     console.log(
       "%cHey, fellow dev!%c\nPoking around the source? Press ` on the page for a terminal, or try the Konami code: ↑ ↑ ↓ ↓ ← → ← → B A",
-      "font: 700 14px 'Space Grotesk', sans-serif; color: #34D399",
-      "font: 12px 'JetBrains Mono', monospace; color: inherit"
+      "font: 700 14px 'Space Grotesk', sans-serif; color: #FF4258",
+      "font: 12px 'Geist Mono', monospace; color: inherit"
     );
   }, []);
 

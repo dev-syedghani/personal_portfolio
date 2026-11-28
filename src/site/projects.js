@@ -1,4 +1,5 @@
 import resumeData from "../utils/resumeData";
+import previews from "../data/previews.json";
 
 /**
  * One project list, shared by the Work section and the full archive page.
@@ -20,6 +21,38 @@ const PERSONAL_GROUP = resumeData.projects?.length
 export const GROUPS = [...CLIENT_GROUPS, ...PERSONAL_GROUP];
 
 export const ALL_PROJECTS = GROUPS.flatMap((g) => g.items.map((p) => ({ ...p, group: g.group })));
+
+const localImage = (src) => (typeof src === "string" && src.startsWith("/") ? src : null);
+
+/**
+ * Everything the archive gallery shows: client and personal builds plus the
+ * published gems. Client work gets its live-site screenshot (see
+ * scripts/capture-previews.mjs); stock photos are dropped in favour of
+ * generated art, since they say nothing about the actual product.
+ */
+export const GALLERY = [
+  ...CLIENT_GROUPS.flatMap((g) =>
+    g.items.map((p) => ({ ...p, kind: "client", group: g.group, preview: previews[p.name] ?? null, live: p.url })),
+  ),
+  ...(resumeData.projects ?? []).map((p) => ({
+    ...p,
+    kind: "personal",
+    group: "Personal",
+    preview: localImage(p.image),
+    github: p.url,
+  })),
+  ...resumeData.openSource.gems.map((g) => ({
+    name: g.name,
+    kind: "gem",
+    group: "Ruby gem",
+    badge: g.badge,
+    version: g.version,
+    description: g.tagline,
+    tech: g.tech,
+    github: g.github,
+    rubygems: g.rubygems,
+  })),
+];
 
 /** How many land on the home page before the archive takes over. */
 export const FEATURED_COUNT = 5;

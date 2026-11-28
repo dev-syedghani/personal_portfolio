@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { FiGithub } from "react-icons/fi";
 import { useGitHubContributions, useContributionYears } from "../../hooks/useGitHubContributions";
-import { ContributionHeatmap } from "../../components/sections/GitHubSection";
+import { ContributionCalendar } from "./ContributionCalendar";
 import CountUp from "../../components/reactbits/CountUp";
 import { Reveal, SectionHead } from "../parts";
 
@@ -37,7 +37,7 @@ export function Activity() {
   const { active, best, streak } = useMemo(() => summarize(days), [days]);
 
   const stats = [
-    { label: "contributions", value: total },
+    { label: "contributions", value: total, accent: true },
     { label: "active days", value: active },
     { label: "day streak (best)", value: streak },
     { label: "commits on best day", value: best?.count ?? 0 },
@@ -46,7 +46,7 @@ export function Activity() {
   return (
     <section className="sec" id="github">
       <div className="wrap">
-        <SectionHead eyebrow="Activity" title="Commit" accent="history." lead="Pulled live from GitHub. Hover a pillar to see a day." />
+        <SectionHead eyebrow="Activity" title="Proof of work," accent="one commit at a time." lead="Pulled live from GitHub. Hover any day to trace its week and weekday." />
 
         <Reveal>
           <div className="card" style={{ padding: "clamp(18px,3vw,32px)", background: "var(--card)" }}>
@@ -70,8 +70,8 @@ export function Activity() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12, marginBottom: 18 }}>
               {stats.map((s) => (
-                <div key={s.label} style={{ padding: "14px 16px", borderRadius: 14, border: "1px solid var(--line)", background: "rgba(255,255,255,0.015)" }}>
-                  <div className="display" style={{ fontSize: 28, color: "var(--ink)" }}>
+                <div key={s.label} className="act-stat">
+                  <div className={`display${s.accent ? " accent" : ""}`} style={{ fontSize: 30 }}>
                     {loading ? "—" : <CountUp key={`${year}-${s.label}-${s.value}`} to={s.value} suffix={s.suffix ?? ""} duration={1.4} />}
                   </div>
                   <div className="k" style={{ marginTop: 6 }}>{s.label}</div>
@@ -81,7 +81,7 @@ export function Activity() {
 
             {loading && <div className="mono" style={{ minHeight: 264, display: "grid", placeItems: "center", color: "var(--muted)", fontSize: 12 }}>Loading contributions…</div>}
             {error && !loading && <div className="mono" style={{ minHeight: 264, display: "grid", placeItems: "center", color: "var(--muted)", fontSize: 12 }}>GitHub is not responding right now. Try again in a moment.</div>}
-            {!loading && !error && days.length > 0 && <ContributionHeatmap key={year} contributions={days} totalThisYear={total} year={year} />}
+            {!loading && !error && days.length > 0 && <ContributionCalendar key={year} contributions={days} />}
           </div>
         </Reveal>
       </div>

@@ -20,5 +20,15 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      output: {
+        // Libraries change far less often than the site, so they get their own
+        // long-cached chunk instead of being re-downloaded with every deploy.
+        manualChunks(id) {
+          if (/node_modules[\/](react|react-dom|scheduler)[\/]/.test(id)) return 'react';
+          if (/node_modules[\/](framer-motion|motion-dom|motion-utils)[\/]/.test(id)) return 'motion';
+        },
+      },
+    },
   },
 });

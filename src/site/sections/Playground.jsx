@@ -730,9 +730,9 @@ export function Playground() {
       <div className="wrap">
         <SectionHead
           eyebrow="Playground"
-          title="Take a break,"
-          accent="play something."
-          lead="Four tiny games I built in React. Your best scores stay in this browser, so come back and beat them."
+          title="Off the clock,"
+          accent="four tiny games."
+          lead="Bugs to squash, deploys to survive, a stack to type. High scores stay in your browser — come back and beat yours."
         />
         <Reveal>
           <div className="pg-tabs" role="tablist" aria-label="Games">

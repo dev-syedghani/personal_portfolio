@@ -23,7 +23,7 @@ export const FLOW_CORE = {
       name: "React.js",
       nodeClass: "Application Core",
       role: "Client SPAs — dashboards, auth flows, integration-heavy UIs with role-based views.",
-      deploymentNote: "Paired with Rails JSON APIs and ActionCable channels across 6 shipped SaaS products.",
+      deploymentNote: "Paired with Rails JSON APIs and ActionCable channels across 7 shipped SaaS products.",
     },
     {
       id: "sidekiq-core",
@@ -70,6 +70,8 @@ export const FLOW_CLUSTERS = [
     id: "integrations",
     label: "INTEGRATIONS",
     items: [
+      { id: "shopify", name: "Shopify", nodeClass: "Commerce", role: "Admin GraphQL API, embedded admin app (App Bridge), webhooks, native returns and Liquid themes.", deploymentNote: "Midway Sports — order edits, refunds, fulfillment and an embedded admin app, with idempotent webhook handling." },
+      { id: "vendor-edi", name: "Vendor EDI / SFTP", nodeClass: "Inventory Sync", role: "Multi-vendor inventory and order feeds with retry/backoff queues and streaming parsers.", deploymentNote: "Nike, S&S Activewear, Adidas Click and Perry Ellis (static-IP SFTP) syncing into Shopify." },
       { id: "hubspot", name: "HubSpot CRM", nodeClass: "CRM Sync", role: "Bi-directional partner data sync with conflict resolution.", deploymentNote: "CinnaLab ↔ HubSpot via idempotent Sidekiq jobs." },
       { id: "salesforce", name: "Salesforce", nodeClass: "CRM Sync", role: "Enterprise CRM bi-directional sync.", deploymentNote: "Deal registration and lead scoring pipeline." },
       { id: "qbo", name: "QuickBooks Online", nodeClass: "Finance", role: "Multi-entity bi-directional accounting sync.", deploymentNote: "Controllr/Monthend GAAP job-costing integration." },

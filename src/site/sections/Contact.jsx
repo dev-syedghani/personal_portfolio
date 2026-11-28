@@ -13,7 +13,7 @@ const TOPICS = [
 ];
 
 const STARTERS = {
-  role: ["We're hiring a full-stack engineer.", "It's a remote React + Rails role.", "Could we set up a quick call?"],
+  role: ["We're hiring a Rails engineer.", "The role involves Shopify and integrations.", "Are you free for a call this week?"],
   contract: ["I need help with a Rails app.", "We're building a Next.js MVP.", "We need Stripe integration work."],
   hi: ["Loved the portfolio!", "I beat your Bug Hunt score.", "I found the terminal."],
 };
@@ -316,7 +316,7 @@ export function Contact() {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="h2 contact-title">
-            Let's build <span className="serif">something good.</span>
+            Got a hard problem? <span className="serif">Let's talk.</span>
           </h2>
         </Reveal>
 
@@ -325,7 +325,7 @@ export function Contact() {
             <aside className="cp-side">
               <div className="cp-glow" aria-hidden="true" />
               <p className="cp-intro">
-                Hiring, got a project, or just want to say hi? Send a note and I'll get back to you <b>within a day</b>.
+                A Rails role, a Shopify build that's gone sideways, or an integration nobody wants to own — write it down and I&apos;ll reply <b>within a day</b>.
               </p>
 
               <div className="cp-block">

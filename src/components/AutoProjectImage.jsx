@@ -1,64 +1,36 @@
 import React from "react";
-import C, { alpha } from "../theme";
 import { IconForTech } from "./Icons";
 
-const PALETTES = [
-  ["#3a2f1d", "#1a1410"],
-  ["#1d2e3a", "#10161a"],
-  ["#2e1d3a", "#16101a"],
-  ["#1d3a2e", "#101a16"],
-  ["#3a1d2e", "#1a1016"],
-  ["#2b2b1d", "#161610"],
-];
-
-function hashString(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = (h << 5) - h + str.charCodeAt(i);
-    h |= 0;
-  }
-  return Math.abs(h);
-}
-
-export function AutoProjectImage({ name, tech }) {
-  const palette = PALETTES[hashString(name) % PALETTES.length];
-  const primaryTech = tech && tech[0];
-
+/**
+ * On-brand stand-in for a project with no honest screenshot (styled by .gal-art
+ * in site.css). With `stats`, it becomes a small dashboard of the project's
+ * headline numbers, so a missing screenshot still says something real.
+ */
+export function AutoProjectImage({ name, tech, label, stats }) {
+  const main = (tech ?? []).find((t) => !/postgres|redis/i.test(t)) ?? tech?.[0];
+  const shown = (stats ?? []).slice(0, 4);
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "relative",
-        background: `linear-gradient(150deg, ${palette[0]} 0%, ${palette[1]} 100%)`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-      }}
-    >
-      {primaryTech && (
-        <div style={{ position: "absolute", opacity: 0.18, transform: "scale(3.4)" }}>
-          <IconForTech name={primaryTech} size={64} colored />
+    <div className={`gal-art${shown.length ? " has-stats" : ""}`}>
+      <div className="gal-art-grid" />
+      {main && (
+        <span className="gal-art-mark">
+          <IconForTech name={main} size={120} colored={false} />
+        </span>
+      )}
+      <div className="gal-art-text">
+        {label && <span className="mono">{label}</span>}
+        <strong className="display">{name}</strong>
+      </div>
+      {shown.length > 0 && (
+        <div className="gal-art-stats">
+          {shown.map((s) => (
+            <div key={s.label}>
+              <b className="display">{s.value}</b>
+              <span>{s.label}</span>
+            </div>
+          ))}
         </div>
       )}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          padding: "6px 14px",
-          borderRadius: 100,
-          background: "rgba(0,0,0,0.35)",
-          border: `1px solid ${alpha(C.copper, "30")}`,
-          fontSize: 11,
-          fontFamily: "'JetBrains Mono',monospace",
-          color: "#e8e8e8",
-          textAlign: "center",
-          maxWidth: "88%",
-        }}
-      >
-        {name}
-      </div>
     </div>
   );
 }

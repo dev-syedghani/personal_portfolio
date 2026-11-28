@@ -1,5 +1,5 @@
 // Syed Ghani — portfolio single source of truth (v3 — from updates.md)
-// Photo: /syed_ghani.svg (real headshot in public/)
+// Photo: /hero-portrait.jpg, rendered from public/syed_ghani.svg by `npm run portrait`
 
 const resumeData = {
   name: "Syed Ghani",
@@ -7,13 +7,14 @@ const resumeData = {
   titles: [
     "Full-Stack Software Engineer",
     "Ruby on Rails Developer",
+    "Shopify & Rails Engineer",
     "React.js Developer",
     "API & Integrations Specialist",
     "Problem Solver",
   ],
-  tagline: "Rails · React · Production SaaS, owned end-to-end",
+  tagline: "Rails · Shopify · React — production systems, owned end-to-end",
   headline:
-    "Full-stack engineer building and owning production Ruby on Rails + React SaaS systems — from schema and background jobs to polished UI. Open to on-site/hybrid roles in Lahore and remote roles globally.",
+    "Full-stack Rails + Shopify engineer who owns business-critical automation end-to-end — from a bot that places real wholesale orders to multi-vendor inventory sync, an embedded Shopify app, and the reliability work that keeps it running under production load. Open to on-site/hybrid roles in Lahore and remote roles globally.",
 
   email: "devsyed.ghani@gmail.com",
   emailAcademic: "2020cs669@student.uet.edu.pk",
@@ -24,7 +25,7 @@ const resumeData = {
   linkedinUrl: "https://www.linkedin.com/in/syedmghani/",
   githubUrl: "https://github.com/dev-syedghani",
   rubygemsProfile: "https://rubygems.org/profiles/devsyedghani",
-  photo: "/syed_ghani.svg",
+  photo: "/hero-portrait.jpg",
 
   availability: {
     status: "Currently employed — open to the right opportunity",
@@ -38,13 +39,14 @@ const resumeData = {
 
   credibilityStrip: [
     "7 SaaS Products Shipped",
+    "148 PRs to Production in One Quarter",
     "Sole Engineer on a Production PRM",
     "4 Published Rails Gems",
     "Gem Downloads (live from RubyGems)",
   ],
 
   summary:
-    "Full-stack engineer focused on Ruby on Rails and React who has shipped and owned a production SaaS platform end-to-end — not just contributed to one. Currently a Senior Software Engineer at Stackworx, working on Midway Sports' Rails + Shopify e-commerce platform: the out-of-stock case lifecycle, multi-vendor inventory ingestion, and returns processing. Previously, as sole engineer on CinnaLab PRM at Blackstack, built the entire system from zero to production in 8 months: multi-tenant React/Rails architecture, bi-directional HubSpot/Salesforce CRM sync, a zero-data-loss Paddle-to-Chargebee billing migration, and a Devise + Pundit RBAC system with ActionCable-powered real-time notifications — running with zero critical incidents since launch. Across 7 SaaS products in AI/PRM, fintech, ed-tech, e-commerce, and college athletics, the pattern repeats: given ambiguous scope, ships working production systems, not prototypes. Also maintains 4 open-source Rails gems with {GEM_DOWNLOADS} combined downloads.",
+    "Full-stack engineer focused on Ruby on Rails and React who has shipped and owned a production SaaS platform end-to-end — not just contributed to one. Currently a Senior Software Engineer at Stackworx and primary engineer on Midway Sports' Rails + Shopify platform — 148 PRs and 509 commits shipped to production in a single quarter across five vendor integrations (Nike, S&S Activewear, Adidas Click, Perry Ellis EDI/SFTP and the Shopify core), including a bot that places real wholesale orders unattended, the out-of-stock and returns/exchange engines, and an embedded Shopify admin app. Previously, as sole engineer on CinnaLab PRM at Blackstack, built the entire system from zero to production in 8 months: multi-tenant React/Rails architecture, bi-directional HubSpot/Salesforce CRM sync, a zero-data-loss Paddle-to-Chargebee billing migration, and a Devise + Pundit RBAC system with ActionCable-powered real-time notifications — running with zero critical incidents since launch. Across 7 SaaS products in AI/PRM, fintech, ed-tech, e-commerce, and college athletics, the pattern repeats: given ambiguous scope, ships working production systems, not prototypes. Also maintains 4 open-source Rails gems with {GEM_DOWNLOADS} combined downloads.",
 
   aboutExtra:
     "I care about clear boundaries between domains, tests that earn their keep (RSpec / Jest), and integrations that survive real traffic. Comfortable owning a slice of the stack from migration to deploy — or the whole thing, solo, from architecture to launch.",
@@ -54,34 +56,45 @@ const resumeData = {
     {
       icon: "architecture",
       title: "Architecture & Scale",
+      metric: { value: "8 mo", label: "solo, from zero to a production PRM" },
+      tags: ["Multi-tenancy", "Sidekiq", "Redis", "ActionCable"],
       points: [
         "Multi-tenant Rails architecture with dynamic subdomain routing (CinnaLab)",
         "Row-level tenancy patterns — also shipped as the rails-tenantify gem",
         "Background job systems with Sidekiq/Redis: retries, idempotency, and dead-letter-queue handling",
         "ActionCable/WebSockets for real-time notifications, replacing polling entirely",
+        "Streaming vendor syncs instead of in-memory buffering — no more OOM failures on large inventory files (Midway Sports)",
       ],
     },
     {
       icon: "integrations",
       title: "Data & Integrations",
+      metric: { value: "40%", label: "faster search across 2,500+ listings" },
+      tags: ["Shopify GraphQL", "HubSpot", "Salesforce", "QuickBooks", "EDI / SFTP"],
       points: [
         "Bi-directional CRM sync (HubSpot + Salesforce) with conflict resolution and idempotent Sidekiq jobs",
         "QuickBooks Online multi-entity sync pipeline (Controllr/Monthend)",
+        "Five-vendor inventory sync for Shopify — Nike, S&S Activewear, Adidas Click, Perry Ellis over EDI/SFTP — with a dedicated location per vendor so one feed can't zero another",
         "PostgreSQL query and index optimization — cut faceted search response time 40% on a 2,500+ listing dataset",
       ],
     },
     {
       icon: "payments",
       title: "Payments & Billing",
+      metric: { value: "0", label: "records lost in the Paddle → Chargebee cutover" },
+      tags: ["Stripe", "Paddle", "Chargebee", "Webhooks"],
       points: [
         "Stripe, Paddle, and Chargebee integrations across three different products",
         "Full Paddle → Chargebee subscription billing migration with zero data loss and zero customer disputes",
         "Stripe subscription microservice built from scratch with idempotent webhooks and PCI-aligned handling (Docyt)",
+        "Exchange payments on Shopify returns — collect upfront, credit back after inspection, reverse cleanly when a refund fails mid-flow",
       ],
     },
     {
       icon: "auth",
       title: "Auth & Security",
+      metric: { value: "0", label: "critical auth incidents since launch" },
+      tags: ["Devise", "Pundit", "OAuth 2.0", "rails-guarddog"],
       points: [
         "Devise + Pundit RBAC systems run in production with zero critical incidents and zero auth issues",
         "Google OAuth 2.0 flows with careful callback and token-refresh handling",
@@ -97,28 +110,51 @@ const resumeData = {
       role: "Senior Software Engineer",
       company: "Stackworx",
       logo: "/logos/stackworx.svg",
+      companyUrl: "https://stackworx.co",
       location: "Lahore, Punjab, Pakistan · On-site",
       duration: "Aug 2026 — Present",
-      summary: "Rails + Shopify project at Stackworx, focusing on inventory management and user experience.",
+      summary:
+        "Primary engineer on Midway Sports' production Rails + Shopify platform for a multi-brand sportswear retailer — inventory sync across five vendors, unattended order automation, returns/exchanges and out-of-stock resolution. 509 commits and 148 PRs shipped to production in one quarter.",
       points: [
-        "Developed solutions for inventory sync, improving efficiency in stock management.",
-        "Enhanced features for out-of-stock items and streamlined the returns process.",
+        "Shipped 148 PRs to production in 14 weeks (509 commits, 63 migrations, 97 spec files) — sole or primary engineer on 5 vendor integrations: Nike, S&S Activewear, Adidas Click, Perry Ellis (EDI/SFTP) and the Shopify core.",
+        "Built a Nike dropship bot that places real wholesale orders unattended — duplicate-order guards, Shopify re-verification before submit, pause/resume and per-order holds for human-in-the-loop safety.",
+        "Built the out-of-stock and returns/exchange engines end-to-end: automated 3/5/7-day follow-ups and day-8 auto-refunds, inventory holds against overselling, and exchange tax verified against Shopify's own returnCalculate API.",
+        "Hardened the platform under load — N+1 and memory-bloat elimination, streaming instead of in-memory vendor syncs to stop OOM failures, and idempotency guards on every webhook race.",
+      ],
+      highlights: [
+        { value: "148", label: "PRs shipped to production" },
+        { value: "509", label: "commits in 14 weeks" },
+        { value: "5", label: "vendor integrations owned" },
+        { value: "63", label: "migrations authored" },
       ],
       projects: [
         {
           name: "Midway Sports",
           url: "https://midwaysports.com",
+          role: "Primary Engineer",
+          period: "Aug – Nov 2026 · 14 weeks",
+          highlights: [
+            { value: "148", label: "PRs shipped to production" },
+            { value: "509", label: "commits in 14 weeks" },
+            { value: "71.6k", label: "lines added" },
+            { value: "5", label: "vendor integrations" },
+            { value: "63", label: "migrations authored" },
+            { value: "97", label: "spec files" },
+          ],
           description:
-            "Rails 7.2 monolith running Midway Sports' e-commerce operations end-to-end: internal ops dashboard, Shopify-embedded admin tools, and customer-facing self-service portals from one codebase.",
-          tech: ["Ruby on Rails 7.2", "PostgreSQL", "pgvector", "Sidekiq", "Redis", "Shopify GraphQL API", "Hotwire", "Turbo Streams", "ActionCable", "Devise"],
+            "Production Rails 7.2 + Shopify platform for a multi-brand sportswear retailer: multi-vendor inventory sync, an unattended Nike ordering bot, returns/exchanges, out-of-stock resolution and an embedded Shopify admin app — from one codebase.",
+          tech: ["Ruby on Rails 7.2", "Shopify GraphQL API", "Shopify App Bridge", "Liquid", "PostgreSQL", "Sidekiq", "Redis", "Hotwire", "Turbo Streams", "Tailwind CSS", "SFTP / EDI", "RSpec"],
           problem:
-            "Out-of-stock orders, multi-vendor inventory files, and returns all ran through manual staff intervention — slow for customers and a recurring ops burden for the team.",
+            "Out-of-stock orders, five vendors' inventory feeds, wholesale reordering and returns all depended on staff working by hand — slow for customers, risky for stock accuracy, and a constant ops burden.",
           metrics: [
-            "Built the OOS (out-of-stock) case lifecycle end-to-end: Shopify webhook creates the case, customers self-serve a replacement or refund, Shopify GraphQL mutations execute it — no staff approval needed in the common path",
-            "Automated day-8 auto-refund and 3/5/7-day reminder emails via cron-driven Sidekiq jobs, independent of whether the customer ever revisits the case",
-            "Kept an audit trail and a live staff notification feed as two deliberately separate systems (PublicActivity for the permanent case timeline, Noticed for per-staff-user read state), both driven off one activity-logging choke point",
-            "Built per-vendor file parsers for inventory ingestion, since vendor file formats aren't standardized — plus a daily job that flags SKUs that never resolved to a product",
-            "Isolated Nike/Jordan dropship tracking (headless-browser scraping) onto its own Sidekiq/dyno process so a scraping backlog can't starve routine inventory and order jobs",
+            "148 PRs shipped to production in 14 weeks — 509 commits, 71.6k lines added, 63 migrations and 97 spec files",
+            "Nike dropship bot places real wholesale orders and syncs multi-parcel tracking back into Shopify fulfillments, with duplicate-order guards and pause/resume controls for staff",
+            "Out-of-stock lifecycle end-to-end: webhook detection, 3/5/7-day follow-ups, day-8 auto-refund, inventory holds against overselling and automatic restock notifications",
+            "Returns & exchange engine on Shopify's native return flow — upfront exchange payments, credit-back after inspection, refund-failure reversal and 14-day auto-expiry",
+            "Inventory sync for S&S Activewear, Adidas Click and Perry Ellis (static-IP SFTP/EDI) with chunked upserts, retry/backoff queues and a dedicated Shopify location per vendor so one feed can never zero another's stock",
+            "Streaming vendor syncs (no more OOM on large files), SQL-side dashboard dedup, N+1 elimination, and a lightweight API-token flow that cut a vendor bot's memory footprint",
+            "Embedded Shopify admin app (App Bridge, session tokens), Admin GraphQL integration for order edits, refunds and fulfillment, plus Liquid storefront theme fixes",
+            "Read-only RBAC enforced at the data layer, SKU-level OOS reporting, a 'Customers Also Viewed' recommender built from 60 days of tracking data, and a full admin redesign from Bootstrap to Tailwind",
           ],
         },
       ],
@@ -141,6 +177,12 @@ const resumeData = {
           url: "https://cinnalab.io/",
           flagship: true,
           role: "Sole Engineer",
+          highlights: [
+            { value: "8 mo", label: "solo, zero to production" },
+            { value: "0", label: "critical incidents since launch" },
+            { value: "0", label: "records lost in billing migration" },
+            { value: "2", label: "CRMs synced bi-directionally" },
+          ],
           description:
             "AI-assisted Partner Relationship Management platform: partner onboarding, deal registration, lead scoring, e-learning, training, and e-signatures with two-way CRM and LMS sync.",
           image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=500&fit=crop&q=80",
@@ -170,6 +212,12 @@ const resumeData = {
         {
           name: "Intercollegiate",
           url: "https://intercollegiate.co/",
+          highlights: [
+            { value: "40%", label: "faster search" },
+            { value: "2,500+", label: "active listings" },
+            { value: "<200ms", label: "search paths" },
+            { value: "100%", label: "sprints on time" },
+          ],
           description:
             "National job board for college athletics — 2,500+ active listings with faceted search, geolocation filtering, and an ActiveAdmin recruiter dashboard.",
           image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop&q=80",
@@ -292,6 +340,8 @@ const resumeData = {
       { name: "Chargebee", detail: ["Subscriptions", "Billing cycles", "Full Paddle→Chargebee platform migration"] },
     ],
     integrations: [
+      { name: "Shopify", detail: ["Admin GraphQL API", "Embedded apps (App Bridge, session tokens)", "Webhooks with idempotency", "Liquid theme development", "Native returns & exchanges"] },
+      { name: "Vendor EDI / SFTP", detail: ["Perry Ellis static-IP SFTP", "S&S Activewear API", "Adidas Click", "Nike order automation"] },
       { name: "HubSpot CRM", detail: ["Bi-directional sync", "Conflict resolution", "Idempotent Sidekiq jobs"] },
       { name: "Salesforce", detail: ["Bi-directional sync", "Conflict resolution"] },
       { name: "QuickBooks Online", detail: ["Multi-entity bi-directional sync", "GAAP job-costing"] },
@@ -324,12 +374,12 @@ const resumeData = {
 
   // ── Open source gems ──────────────────────────────────────────────────────
   openSource: {
-    combinedDownloads: 5993,
+    combinedDownloads: 8215,
     rubygemsProfile: "https://rubygems.org/profiles/devsyedghani",
     gems: [
       {
         name: "rails-guarddog",
-        version: "v0.1.14",
+        version: "v0.1.15",
         badge: "Security",
         tagline: "Catches security problems in your Rails code before they reach production.",
         description: "Detects SQL injection, XSS, secrets exposure, unsafe redirects, and mass assignment. Configurable severity, CI/CD-ready.",
@@ -529,7 +579,6 @@ const resumeData = {
 
   resumeDownloads: [
     { label: "Download Resume (Full-Stack)", file: "/Syed_Ghani.pdf" },
-    { label: "Download Resume (Remote-Focused)", file: "/Syed_Ghani_Remote.pdf" },
   ],
 };
 

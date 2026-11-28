@@ -332,7 +332,7 @@ export function Terminal() {
               <span className="mono">syed@portfolio: ~</span>
               <span className="mono term-esc">esc</span>
             </div>
-            <div className="term-body mono" ref={body}>
+            <div className="term-body mono" ref={body} data-lenis-prevent>
               {lines.map((l, i) =>
                 l.cls === "cmd" ? (
                   <div key={i} className="term-line">

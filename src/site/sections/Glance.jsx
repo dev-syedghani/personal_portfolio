@@ -9,7 +9,7 @@ export function useSpot() {
   const mode = useThemeMode();
   return {
     theme: mode,
-    spotlightColor: mode === "dark" ? "#34d399" : "#059669",
+    spotlightColor: mode === "dark" ? "#ff4258" : "#cc1530",
     intensity: mode === "dark" ? 0.09 : 0.22,
     spotlightSize: 380,
     borderGlow: 0.6,

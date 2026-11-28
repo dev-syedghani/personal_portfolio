@@ -48,6 +48,7 @@ import {
   SiQuickbooks,
   SiMoodle,
   SiStripe,
+  SiShopify,
   SiPaddle,
   SiGoogle,
   SiJest,
@@ -175,6 +176,7 @@ export function getTechColor(name = "") {
   if (n.includes("quickbooks") || n.includes("qbo")) return "#2CA01C";
   if (n.includes("moodle")) return "#F7931E";
   if (n.includes("stripe")) return "#635BFF";
+  if (n.includes("shopify")) return "#95BF47";
   if (n.includes("paddle")) return "#0066FF";
   if (n.includes("chargebee")) return "#FF6B00";
   if (n.includes("devise")) return "#E53935";
@@ -235,6 +237,7 @@ export function IconForTech({ name = "", size = DEFAULT_SIZE, colored = true, co
   if (n.includes("quickbooks") || n.includes("qbo")) return <SiQuickbooks size={size} color={brandColor} />;
   if (n.includes("moodle")) return <SiMoodle size={size} color={brandColor} />;
   if (n.includes("stripe")) return <SiStripe size={size} color={brandColor} />;
+  if (n.includes("shopify")) return <SiShopify size={size} color={brandColor} />;
   if (n.includes("paddle")) return <SiPaddle size={size} color={brandColor} />;
   if (n.includes("chargebee")) return <FaReceipt size={size} color={brandColor} />;
   if (n.includes("devise")) return <FaLock size={size} color={brandColor} />;

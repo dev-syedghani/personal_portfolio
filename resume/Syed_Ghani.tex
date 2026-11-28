@@ -1,0 +1,217 @@
+% ─────────────────────────────────────────────────────────────────────────────
+%  Syed M. Ghani — Resume v12 — Full-Stack Engineer (Rails + Shopify)
+%  Update: Midway Sports section rebuilt from the git-history report (148 PRs,
+%          509 commits, five vendor integrations, Nike order bot, returns
+%          engine); Shopify in the subtitle; product count, gem versions and
+%          download totals brought in line with the portfolio and RubyGems.
+% ─────────────────────────────────────────────────────────────────────────────
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[left=0.55in, right=0.55in, top=0.35in, bottom=0.3in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[skip=3pt]{parskip}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{headerblue}{HTML}{16223B}
+\definecolor{accent}{HTML}{2C4A73}
+\definecolor{subtle}{HTML}{5B6472}
+\definecolor{body}{HTML}{1A1A1A}
+\definecolor{green}{HTML}{1F6B45}
+
+\hypersetup{colorlinks=true, urlcolor=accent, linkcolor=accent, pdfborder={0 0 0}}
+
+\color{body}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\renewcommand{\baselinestretch}{0.96}
+
+% ── Section heading ───────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\fontsize{10pt}{12pt}\selectfont\bfseries\color{headerblue}}
+  {}{0pt}{\MakeUppercase}
+  [{\vspace{1pt}{\color{headerblue}\hrule height 0.8pt}\vspace{0.5pt}{\color{accent}\hrule height 0.8pt}\vspace{2.5pt}}]
+\titlespacing*{\section}{0pt}{6pt}{1.5pt}
+
+% ── Macros ────────────────────────────────────────────────────────────────────
+\newcommand{\name}[1]{{\fontsize{22pt}{26pt}\selectfont\bfseries\color{headerblue}#1}}
+\newcommand{\subtitle}[1]{{\small\color{accent}#1}}
+\newcommand{\metric}[1]{{\bfseries\color{accent}#1}}
+\newcommand{\win}[1]{{\bfseries\color{green}#1}}
+
+\newcommand{\jobtitle}[3]{
+  {\normalsize\bfseries\color{headerblue}#1} \hfill {\small\color{subtle}#3}\\
+  {\small\color{subtle}\textit{#2}}
+}
+
+\newcommand{\project}[2]{
+  \vspace{1pt}{\small\bfseries\color{headerblue}#1} \quad{\footnotesize\color{subtle}#2}
+}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════
+%  HEADER
+% ══════════════════════════════════════════════════════════════
+
+\name{Syed M. Ghani}
+
+\subtitle{Full-Stack Software Engineer | Ruby on Rails | Shopify | React.js}
+
+\vspace{1pt}
+{\small\color{subtle}
+  \href{mailto:devsyed.ghani@gmail.com}{devsyed.ghani@gmail.com}
+  \enspace\textbullet\enspace +92 309 020 4019
+  \enspace\textbullet\enspace Lahore, Pakistan
+  \enspace\textbullet\enspace
+  \href{https://linkedin.com/in/syedmghani}{LinkedIn}
+  \enspace\textbullet\enspace
+  \href{https://github.com/dev-syedghani}{GitHub}
+  \enspace\textbullet\enspace
+  \href{https://syedghani.is-a.dev}{Portfolio}
+}
+
+\vspace{1pt}
+
+% ══════════════════════════════════════════════════════════════
+%  PROFESSIONAL SUMMARY
+% ══════════════════════════════════════════════════════════════
+\section{Professional Summary}
+
+Full-Stack Engineer who owns business-critical production systems end-to-end — not just contributes to them.
+Currently a \textbf{Senior Software Engineer at Stackworx} and primary engineer on Midway Sports' Rails + Shopify
+platform: \metric{148 PRs} and \metric{509 commits} shipped to production in a single quarter across
+\metric{five vendor integrations}, including a bot that places real wholesale orders unattended, the out-of-stock and
+returns/exchange engines, and an embedded Shopify admin app. Previously, as the \textbf{sole engineer} on CinnaLab PRM
+at Blackstack, built the entire system from zero to production in \metric{8 months}: React/Rails architecture,
+bi-directional CRM sync with two major platforms, a zero-data-loss billing migration, and a multi-role auth system that
+ran with \win{zero critical incidents and zero auth issues}. Across \metric{7 SaaS products} in AI/PRM, fintech,
+ed-tech, e-commerce, and college athletics, the pattern repeats: given ambiguous scope, ships working production
+systems, not prototypes. Also maintains \metric{4 open-source Rails gems} with \metric{8,200+ combined downloads}.
+
+% ══════════════════════════════════════════════════════════════
+%  TECHNICAL SKILLS
+% ══════════════════════════════════════════════════════════════
+\section{Technical Skills}
+
+\noindent
+\textbf{\color{headerblue}Backend:} Ruby on Rails 5/6/7, REST APIs, ActiveRecord, PostgreSQL, MySQL, Redis, Sidekiq, ActiveJob, OAuth 2.0, multi-tenant architecture, Hotwire (Turbo Drive, Turbo Frames, Turbo Streams), Stimulus.js, ActionCable (WebSockets, Rails channels)
+
+\noindent
+\textbf{\color{headerblue}Frontend:} React.js, JavaScript ES6+, Material UI, TailwindCSS, React Query, Redux Toolkit, React Router v6, responsive design
+
+\noindent
+\textbf{\color{headerblue}Shopify \& E-commerce:} Admin GraphQL API, embedded apps (App Bridge, session tokens), webhooks with idempotency, native returns/exchanges, Liquid themes, vendor EDI/SFTP feeds
+
+\noindent
+\textbf{\color{headerblue}Rails Gems:} Devise, Pundit (RBAC), Kaminari, ActiveAdmin, FactoryBot, RSpec, rails-guarddog
+
+\noindent
+\textbf{\color{headerblue}Payments:} Stripe, Paddle, Chargebee (subscriptions, webhooks, platform migrations)
+
+\noindent
+\textbf{\color{headerblue}Integrations:} HubSpot, Salesforce (bi-directional sync), QuickBooks Online, Moodle LMS, Documenso
+
+\noindent
+\textbf{\color{headerblue}Testing \& DevOps:} RSpec, Jest, GitHub Actions CI/CD, AWS (IAM, VPC, EC2, RDS, S3, CloudWatch), Docker, Heroku, Linux, zero-downtime migrations
+
+\noindent
+\textbf{\color{headerblue}Currently Learning:} Django, deeper AWS (Lambda, ECR), containerized deployments
+
+% ══════════════════════════════════════════════════════════════
+%  PROFESSIONAL EXPERIENCE
+% ══════════════════════════════════════════════════════════════
+\section{Professional Experience}
+
+\jobtitle{Senior Software Engineer}{Stackworx · Lahore, Pakistan · On-site}{Aug 2026 -- Present}
+
+\project{Midway Sports}{Multi-Brand Sportswear Retailer · Rails 7.2 + Shopify · Primary Engineer}
+\begin{itemize}[leftmargin=1.2em, topsep=2pt, itemsep=1.5pt, parsep=0pt]
+  \item Shipped \metric{148 PRs} to production in \metric{14 weeks} (\metric{509 commits}, \metric{63 migrations}, \metric{97 spec files}) as sole or primary engineer on \metric{5 vendor integrations}: Nike, S\&S Activewear, Adidas Click, Perry Ellis (EDI/SFTP), and the Shopify core.
+  \item Built a Nike dropship bot that places \win{real wholesale orders unattended}, by adding duplicate-order guards, Shopify order re-verification before submit, pause/resume and per-order holds for human-in-the-loop safety, and multi-parcel tracking sync back into Shopify fulfillments.
+  \item \win{Removed manual chasing} of out-of-stock orders, by building the full case lifecycle: webhook detection, 3/5/7-day follow-ups, day-8 auto-refund, inventory holds against overselling, and automatic restock notifications.
+  \item Built a returns \& exchange engine on Shopify's native return flow, with upfront exchange payments, credit-back after inspection, refund-failure reversal, and tax/discount accuracy verified against Shopify's own \texttt{returnCalculate} API.
+  \item \win{Stopped OOM failures} on large vendor files, by moving syncs from in-memory buffering to streaming with chunked upserts and retry/backoff queues, plus N+1 elimination and SQL-side dashboard dedup; gave each vendor its own Shopify location so one feed can never zero another's stock.
+\end{itemize}
+
+\vspace{2pt}
+\jobtitle{Software Engineer}{Blackstack Software Solutions · Product studio, Lahore}{Aug 2024 -- May 2026}
+{\footnotesize\color{subtle}\textit{Role ended in a company-wide downsizing; not performance-related.}}
+
+\project{CinnaLab PRM}{AI-Powered Partner Relationship Management · Sole Engineer}
+\begin{itemize}[leftmargin=1.2em, topsep=2pt, itemsep=1.5pt, parsep=0pt]
+  \item Shipped an entire partner relationship management platform to production in \win{8 months} as the sole engineer, by architecting both the React.js/Material UI frontend (onboarding, deal registration, lead scoring, e-learning, per-company theming) and the Rails/Sidekiq backend end-to-end.
+  \item Ran multi-role access control and live notifications in production with \win{zero critical incidents and zero auth issues}, by building a Devise + Pundit RBAC system and ActionCable-powered WebSocket notifications with no polling.
+  \item \win{Eliminated manual data entry} between CinnaLab and two major CRMs, by building bi-directional HubSpot/Salesforce sync with conflict resolution, idempotent jobs, and retry/DLQ handling.
+  \item Migrated the platform's entire subscription billing system with \win{zero data loss and zero customer disputes}, by executing a full Paddle→Chargebee cutover across subscriptions, billing cycles, and webhook verification.
+  \item Removed recurring third-party SaaS licensing costs for e-signature and LMS tooling, by self-hosting Documenso and Moodle from source into production with SSO and secure Rails iframe embedding.
+\end{itemize}
+
+\project{Intercollegiate}{College Athletics Job Board · 2,500+ Listings}
+\begin{itemize}[leftmargin=1.2em, topsep=2pt, itemsep=1.5pt, parsep=0pt]
+  \item Cut search response time by \win{~40\%} on a 2,500+ listing job board, by redesigning multi-dimensional faceted search (sport, division, salary, geolocation) with optimized PostgreSQL indexing.
+  \item Increased profile engagement and job discoverability for recruiters and athletes, by shipping profile claiming, "who viewed" analytics, related-job recommendations, saved searches, and an ActiveAdmin recruiter dashboard with Turbo Frames/Streams real-time filtering.
+\end{itemize}
+
+\project{Controllr / Monthend}{Month-End Finance SaaS}
+\begin{itemize}[leftmargin=1.2em, topsep=2pt, itemsep=1.5pt, parsep=0pt]
+  \item \win{Eliminated manual reconciliation lag} in month-end close, by building a real-time ingestion pipeline from emails, receipts, and construction platforms with automated GAAP job-costing.
+  \item Ran multi-entity account syncing in production with \win{zero reconciliation errors}, by building a bi-directional QuickBooks Online integration.
+  \item Delivered live, no-refresh updates across five core app modules (Transaction Inbox, Projects, Accounts, Vendors, Settings), by building the UI in React.js with Turbo Streams for real-time CRUD.
+\end{itemize}
+
+\project{Docyt}{AI Bookkeeping SaaS · Microservices}
+{\small \win{Reduced billing support escalations} post-launch for hospitality/SMB payment lines, by building a Stripe subscription microservice from scratch with idempotent webhooks, failure recovery, and PCI-aligned handling.}
+
+\vspace{2pt}
+\jobtitle{Research \& Development Intern}{Al-Khawarizmi Institute of Computer Science (KICS), UET Lahore}{Sep -- Nov 2023}
+{\small Applied research support at KICS; contributed to ongoing R\&D initiatives within the institute.}
+
+\vspace{1pt}
+\jobtitle{Web Development Intern}{Apex Space, Lahore}{Jun -- Aug 2023}
+{\small Developed full-stack features for client web applications; code reviews, daily standups, bug fixes, production deployment support.}
+
+% ══════════════════════════════════════════════════════════════
+%  OPEN SOURCE
+% ══════════════════════════════════════════════════════════════
+\section{Open Source Projects}
+
+{\footnotesize
+\noindent\textbf{\color{headerblue}rails-guarddog} (v0.1.15) — Rails security scanner: SQLi/XSS/secrets/mass-assignment detection. \href{https://github.com/dev-syedghani/rails-guarddog}{GitHub} · \href{https://rubygems.org/gems/rails-guarddog}{RubyGems}
+
+\vspace{1pt}
+\noindent\textbf{\color{headerblue}rails-tenantify} (v0.1.2) — Row-level multi-tenancy for Rails 7+: model/controller scoping, Sidekiq propagation. \href{https://github.com/dev-syedghani/rails-tenantify}{GitHub} · \href{https://rubygems.org/gems/rails-tenantify}{RubyGems}
+
+\vspace{1pt}
+\noindent\textbf{\color{headerblue}rails-persona} (v0.2.7) — Activity-tracking DSL: frequency, recency, inactivity queries. \href{https://github.com/dev-syedghani/rails-persona}{GitHub} · \href{https://rubygems.org/gems/rails-persona}{RubyGems}
+
+\vspace{1pt}
+\noindent\textbf{\color{headerblue}rails-css\_unused} (v0.2.1) — CSS optimizer: unused-selector detection across ERB/HAML/Slim/Stimulus. \href{https://github.com/dev-syedghani/rails-css_unused}{GitHub} · \href{https://rubygems.org/gems/rails-css_unused}{RubyGems}
+
+\vspace{2pt}
+\noindent{\color{subtle}Combined downloads across all four gems: 8,200+.}
+}
+
+% ══════════════════════════════════════════════════════════════
+%  EDUCATION
+% ══════════════════════════════════════════════════════════════
+\section{Education}
+
+\jobtitle{B.Sc. Computer Science}{University of Engineering \& Technology (UET), Lahore}{2020 -- 2024}
+\vspace{1pt}
+{\small\color{subtle}FYP: Urdu Signify—Urdu-to-Sign-Language animation system (GANs/NLP)}
+
+\vspace{1pt}
+{\footnotesize\color{subtle}\centering
+  Portfolio: \href{https://syedghani.is-a.dev}{syedghani.is-a.dev}
+  \quad\textbullet\quad
+  GitHub: \href{https://github.com/dev-syedghani}{github.com/dev-syedghani}
+  \quad\textbullet\quad
+  References available on request
+}
+
+\end{document}

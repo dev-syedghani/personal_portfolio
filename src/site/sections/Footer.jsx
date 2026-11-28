@@ -258,24 +258,24 @@ function Bit({ look, talking }) {
     <svg viewBox="0 0 64 72" width="56" height="63" aria-hidden="true" className="bit-svg">
       <defs>
         <linearGradient id="bit-g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#6ee7b7" />
-          <stop offset="0.6" stopColor="#34d399" />
-          <stop offset="1" stopColor="#059669" />
+          <stop offset="0" stopColor="#ff8a95" />
+          <stop offset="0.6" stopColor="#ff4258" />
+          <stop offset="1" stopColor="#c8102e" />
         </linearGradient>
       </defs>
-      <line x1="32" y1="14" x2="32" y2="5" stroke="#059669" strokeWidth="3" strokeLinecap="round" />
-      <circle className="bit-bulb" cx="32" cy="5" r="4" fill={talking ? "#fbbf24" : "#6ee7b7"} />
+      <line x1="32" y1="14" x2="32" y2="5" stroke="#c8102e" strokeWidth="3" strokeLinecap="round" />
+      <circle className="bit-bulb" cx="32" cy="5" r="4" fill={talking ? "#fbbf24" : "#ff8a95"} />
       <rect x="6" y="14" width="52" height="44" rx="15" fill="url(#bit-g)" />
       <rect x="6" y="14" width="52" height="22" rx="15" fill="#fff" opacity="0.18" />
-      <rect x="14" y="24" width="36" height="22" rx="10" fill="#04140d" />
+      <rect x="14" y="24" width="36" height="22" rx="10" fill="#1a0507" />
       <motion.g style={{ x: px, y: py }}>
         <motion.g animate={{ scaleY: blink ? 0.1 : 1 }} transition={{ duration: 0.08 }} style={{ transformOrigin: "32px 35px" }}>
-          <circle cx="24" cy="35" r="4.2" fill="#6ee7b7" />
-          <circle cx="40" cy="35" r="4.2" fill="#6ee7b7" />
+          <circle cx="24" cy="35" r="4.2" fill="#ff8a95" />
+          <circle cx="40" cy="35" r="4.2" fill="#ff8a95" />
         </motion.g>
       </motion.g>
-      <path d={talking ? "M27 50 q5 5 10 0" : "M28 51 q4 2.5 8 0"} stroke="#04140d" strokeWidth="2.4" fill="none" strokeLinecap="round" />
-      <rect x="20" y="58" width="24" height="8" rx="4" fill="#059669" />
+      <path d={talking ? "M27 50 q5 5 10 0" : "M28 51 q4 2.5 8 0"} stroke="#1a0507" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <rect x="20" y="58" width="24" height="8" rx="4" fill="#c8102e" />
     </svg>
   );
 }

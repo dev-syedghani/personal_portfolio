@@ -1,11 +1,22 @@
 import React, { useRef } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, useInView, useScroll, useSpring } from "framer-motion";
 import resumeData from "../../utils/resumeData";
 import SpotlightCard from "../../components/reactbits/SpotlightCard";
 import { IconForTech } from "../../components/Icons";
-import { Reveal, SectionHead } from "../parts";
+import { Reveal, SectionHead, Tilt } from "../parts";
+import CountUp from "../../components/reactbits/CountUp";
 import { useSpot } from "./Glance";
 import { useThemeMode } from "../../hooks/useThemeMode";
+import { FiArrowUpRight, FiCheck, FiCreditCard, FiLayers, FiShield, FiShuffle } from "react-icons/fi";
+
+const PILLAR_ICONS = { architecture: FiLayers, integrations: FiShuffle, payments: FiCreditCard, auth: FiShield };
+
+// Counts up the numeric part of a metric like "40%" or "8 mo"; "0" stays put.
+function MetricValue({ value }) {
+  const m = /^(\d+)(.*)$/.exec(value);
+  if (!m || m[1] === "0") return value;
+  return <CountUp to={Number(m[1])} suffix={m[2]} duration={1.6} />;
+}
 
 export function Expertise() {
   const SPOT = useSpot();
@@ -14,27 +25,46 @@ export function Expertise() {
       <div className="wrap">
         <SectionHead
           eyebrow="Expertise"
-          title="Not a checklist,"
-          accent="proof in production."
-          lead="Concrete outcomes across architecture, payments, data and auth, measured on real traffic."
+          title="What I'm good at,"
+          accent="with receipts."
+          lead="Four areas I keep getting trusted with — each one backed by a number from a system that's live today."
         />
         <div className="pillars">
-          {resumeData.railsProficiency.map((p, i) => (
-            <Reveal key={p.title} delay={(i % 2) * 0.08} style={{ height: "100%" }}>
-              <SpotlightCard {...SPOT} style={{ ...SPOT.style, padding: 32 }}>
-                <span className="k">0{i + 1}</span>
-                <h3 className="display" style={{ fontSize: 24, margin: "14px 0 20px" }}>{p.title}</h3>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 11 }}>
-                  {p.points.map((pt) => (
-                    <li key={pt} style={{ display: "flex", gap: 12, color: "var(--muted)", fontSize: 14.5, lineHeight: 1.6 }}>
-                      <span style={{ flexShrink: 0, width: 4, height: 4, borderRadius: "50%", background: "var(--dim)", marginTop: 10 }} />
-                      {pt}
-                    </li>
-                  ))}
-                </ul>
-              </SpotlightCard>
-            </Reveal>
-          ))}
+          {resumeData.railsProficiency.map((p, i) => {
+            const Icon = PILLAR_ICONS[p.icon] ?? FiLayers;
+            return (
+              <Reveal key={p.title} delay={(i % 2) * 0.08} style={{ height: "100%" }}>
+                <Tilt max={4} glare>
+                <SpotlightCard {...SPOT} className="pillar" style={{ ...SPOT.style, padding: 32 }}>
+                  <div className="pillar-head">
+                    <span className="stat-icon"><Icon size={16} /></span>
+                    <span className="k">0{i + 1}</span>
+                  </div>
+                  <h3 className="display pillar-title">{p.title}</h3>
+                  {p.metric && (
+                    <div className="pillar-metric">
+                      <span className="stat-num accent"><MetricValue value={p.metric.value} /></span>
+                      <span className="pillar-metric-label">{p.metric.label}</span>
+                    </div>
+                  )}
+                  <ul className="pillar-points">
+                    {p.points.map((pt) => (
+                      <li key={pt}>
+                        <FiCheck size={14} className="pillar-tick" />
+                        {pt}
+                      </li>
+                    ))}
+                  </ul>
+                  {p.tags?.length > 0 && (
+                    <div className="pillar-tags">
+                      {p.tags.map((t) => <span key={t} className="mono">{t}</span>)}
+                    </div>
+                  )}
+                </SpotlightCard>
+                </Tilt>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -84,7 +114,65 @@ export function Skills() {
   );
 }
 
+function TimelineItem({ it, SPOT }) {
+  const ref = useRef(null);
+  // Lit once the scroll line would reach it: the fill runs to "end 60%", so
+  // a node counts as reached when it passes ~40% from the bottom.
+  const lit = useInView(ref, { once: true, margin: "0px 0px -40% 0px" });
+  return (
+    <Reveal style={{ position: "relative" }}>
+      <span ref={ref} className={`timeline-node${lit ? " is-lit" : ""}${it.now ? " is-now" : ""}`} />
+      <Tilt max={2.5} glare>
+        <SpotlightCard {...SPOT} className="tl-card" style={{ ...SPOT.style, padding: 0 }}>
+          <div className="tl-item">
+            <div className="tl-meta">
+              <div className="mono tl-when">{it.when}</div>
+              <div className="tl-where">{it.where}</div>
+              {it.now && <span className="now-live tl-now"><span className="live-dot" /> Now</span>}
+            </div>
+            <div>
+              <div className="tl-head">
+                <span className={`tl-logo${it.logo ? "" : " is-empty"}`}>
+                  {it.logo ? <img src={it.logo} alt="" loading="lazy" /> : it.org.slice(0, 1)}
+                </span>
+                <div style={{ minWidth: 0 }}>
+                  <h3 className="display tl-title">{it.title}</h3>
+                  {it.url ? (
+                    <a href={it.url} target="_blank" rel="noreferrer" className="tl-org cursor-target" data-cursor-label="visit">
+                      {it.org} <FiArrowUpRight size={13} />
+                    </a>
+                  ) : (
+                    <div className="tl-org">{it.org}</div>
+                  )}
+                </div>
+              </div>
+              {it.highlights?.length > 0 && (
+                <div className="tl-stats">
+                  {it.highlights.map((h) => (
+                    <div key={h.label} className="tl-stat">
+                      <span className="display accent"><MetricValue value={h.value} /></span>
+                      <span className="tl-stat-label">{h.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {it.body.length > 0 && (
+                <ul className="tl-points">
+                  {it.body.map((b, bi) => (
+                    <li key={bi}>{b}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </SpotlightCard>
+      </Tilt>
+    </Reveal>
+  );
+}
+
 export function Experience() {
+  const SPOT = useSpot();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 75%", "end 60%"] });
   const fill = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
@@ -94,17 +182,15 @@ export function Experience() {
   // reordering a job must not mean editing this component.
   const items = [
     ...resumeData.experience.flatMap((job) => {
-      const base = { org: job.company, where: job.location };
+      const base = { org: job.company, where: job.location, logo: job.logo, url: job.companyUrl, highlights: job.highlights };
       const body = job.points?.length ? job.points.slice(0, 3) : job.summary ? [job.summary] : [];
       if (Array.isArray(job.roles) && job.roles.length) {
-        return job.roles.map((r, i) => ({
-          ...base,
-          when: r.duration ?? r.at ?? job.duration,
-          title: r.title ?? r.role,
-          body: i === 0 ? body : r.points?.slice(0, 3) ?? [],
-        }));
+        return job.roles.map((r, i) => {
+          const when = r.duration ?? r.at ?? job.duration;
+          return { ...base, when, now: /present/i.test(when), title: r.title ?? r.role, body: i === 0 ? body : r.points?.slice(0, 3) ?? [] };
+        });
       }
-      return [{ ...base, when: job.duration, title: job.role, body }];
+      return [{ ...base, when: job.duration, now: /present/i.test(job.duration), title: job.role, body }];
     }),
     ...resumeData.education.map((e) => ({
       when: e.duration,
@@ -118,30 +204,13 @@ export function Experience() {
   return (
     <section className="sec" id="experience">
       <div className="wrap">
-        <SectionHead eyebrow="Experience" title="Where I've" accent="been shipping." />
+        <SectionHead eyebrow="Experience" title="The road so far," accent="role by role." />
         <div className="timeline" ref={ref}>
           <div className="timeline-rail">
             <motion.div className="timeline-fill" style={{ scaleY: fill }} />
           </div>
           {items.map((it, i) => (
-            <Reveal key={i} style={{ position: "relative" }}>
-              <span className="timeline-node" />
-              <div className="tl-item">
-                <div>
-                  <div className="mono" style={{ color: "var(--soft)", fontSize: 12.5 }}>{it.when}</div>
-                  <div style={{ color: "var(--dim)", fontSize: 12.5, marginTop: 6 }}>{it.where}</div>
-                </div>
-                <div>
-                  <h3 className="display" style={{ fontSize: 22, margin: 0 }}>{it.title}</h3>
-                  <div style={{ color: "var(--muted)", fontSize: 14.5, margin: "4px 0 14px" }}>{it.org}</div>
-                  <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 8 }}>
-                    {it.body.map((b, bi) => (
-                      <li key={bi} style={{ color: "var(--muted)", fontSize: 14.5, lineHeight: 1.65 }}>{b}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </Reveal>
+            <TimelineItem key={i} it={it} SPOT={SPOT} />
           ))}
         </div>
       </div>

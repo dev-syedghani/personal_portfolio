@@ -1,6 +1,54 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import BlurText from "../components/reactbits/BlurText";
+import { usePointerFine } from "../hooks/usePointerFine";
+import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+
+/**
+ * Spring-driven 3D tilt toward the pointer (React Bits "Tilted Card"). With
+ * `glare`, a soft highlight follows the pointer across the face, written to
+ * CSS vars so it costs no re-render. Off for touch and reduced motion.
+ */
+export function Tilt({ children, max = 7, scale = 1, glare = false, className = "", style }) {
+  const fine = usePointerFine();
+  const reduced = usePrefersReducedMotion();
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const s = useMotionValue(1);
+  const rotateX = useSpring(rx, { stiffness: 220, damping: 18 });
+  const rotateY = useSpring(ry, { stiffness: 220, damping: 18 });
+  const sc = useSpring(s, { stiffness: 260, damping: 20 });
+  const on = fine && !reduced;
+
+  const move = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    rx.set(-(py - 0.5) * max * 2);
+    ry.set((px - 0.5) * max * 2);
+    s.set(scale);
+    if (glare) {
+      e.currentTarget.style.setProperty("--gx", `${px * 100}%`);
+      e.currentTarget.style.setProperty("--gy", `${py * 100}%`);
+    }
+  };
+  const reset = () => {
+    rx.set(0);
+    ry.set(0);
+    s.set(1);
+  };
+
+  return (
+    <motion.div
+      className={`${glare ? "tilt-glare " : ""}${className}`}
+      style={{ height: "100%", rotateX: on ? rotateX : 0, rotateY: on ? rotateY : 0, scale: on ? sc : 1, transformPerspective: 900, ...style }}
+      onPointerMove={on ? move : undefined}
+      onPointerLeave={on ? reset : undefined}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 const EASE = [0.22, 1, 0.36, 1];
 

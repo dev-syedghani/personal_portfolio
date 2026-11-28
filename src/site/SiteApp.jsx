@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import { FiBriefcase, FiCpu, FiFileText, FiGithub, FiHome, FiLayers, FiLinkedin, FiMail, FiMoon, FiPlay, FiSun, FiTerminal } from "react-icons/fi";
@@ -10,6 +10,13 @@ import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { usePointerFine } from "../hooks/usePointerFine";
 import { AchievementToasts, TrophyButton, unlock } from "./achievements";
 import { Terminal, openTerminal } from "./Terminal";
+
+// Loaded on demand: the archive is its own view, and the games sit near the
+// bottom of the page. Both are warmed up once the page goes idle (below).
+const loadArchive = () => import("./sections/ProjectsArchive");
+const loadPlayground = () => import("./sections/Playground");
+const ProjectsArchive = lazy(() => loadArchive().then((m) => ({ default: m.ProjectsArchive })));
+const Playground = lazy(() => loadPlayground().then((m) => ({ default: m.Playground })));
 import { Cursor } from "./Cursor";
 import { Hero } from "./sections/Hero";
 import { Marquee } from "./sections/Glance";
@@ -17,12 +24,12 @@ import { About } from "./sections/About";
 import { Work } from "./sections/Work";
 import { Expertise, Experience } from "./sections/Depth";
 import { Toolbox } from "./sections/Toolbox";
-import { ProjectsArchive } from "./sections/ProjectsArchive";
 import { ARCHIVE_HASH } from "./projects";
 import { Activity } from "./sections/Activity";
-import { Playground } from "./sections/Playground";
 import { Contact } from "./sections/Contact";
 import { Footer } from "./sections/Footer";
+import { scrollToEl, useSmoothScroll } from "./smoothScroll";
+import "lenis/dist/lenis.css";
 import "./site.css";
 
 const SECTIONS = ["top", "about", "work", "expertise", "skills", "experience", "github", "games", "contact"];
@@ -57,7 +64,7 @@ function Preloader({ onDone }) {
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}>
         <span className="mono" style={{ color: "var(--muted)", fontSize: 12.5 }}>Loading the good stuff…</span>
-        <span style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 400, fontSize: "clamp(64px,12vw,160px)", lineHeight: 0.8, letterSpacing: "-0.05em", color: "var(--ink)" }}>
+        <span style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 400, fontSize: "clamp(64px,12vw,160px)", lineHeight: 0.8, letterSpacing: "-0.05em", color: "var(--ink)" }}>
           {n}
           <span style={{ color: "var(--accent)" }}>%</span>
         </span>
@@ -104,7 +111,7 @@ function ScrollProgress() {
   return (
     <motion.div
       aria-hidden="true"
-      style={{ position: "fixed", top: 0, left: 0, right: 0, height: 1, zIndex: 70, transformOrigin: "0 50%", scaleX, background: "var(--accent)" }}
+      style={{ position: "fixed", top: 0, left: 0, right: 0, height: 1, zIndex: 70, transformOrigin: "0 50%", scaleX, background: "var(--accent-grad)" }}
     />
   );
 }
@@ -269,7 +276,7 @@ function HirePill() {
 // exist on the main page, so scrollIntoView would silently do nothing. Clearing
 // the hash swaps the view back, then the scroll runs once that has painted.
 const go = (id) => () => {
-  const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scroll = () => scrollToEl(document.getElementById(id));
   if (window.location.hash === ARCHIVE_HASH) {
     history.pushState(null, "", window.location.pathname + window.location.search);
     window.dispatchEvent(new HashChangeEvent("hashchange"));
@@ -279,6 +286,68 @@ const go = (id) => () => {
   scroll();
 };
 
+
+/**
+ * Marks each page band `is-offscreen` while it's out of view, and site.css
+ * pauses every CSS animation inside a marked band. Without this, pings, border
+ * lights and shines keep repainting all the way down a page nobody's looking at.
+ */
+function usePauseOffscreen(deps) {
+  useEffect(() => {
+    const bands = document.querySelectorAll(".site .sec, .site .hero, .site footer");
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle("is-offscreen", !e.isIntersecting)),
+      { rootMargin: "150px 0px" }
+    );
+    bands.forEach((b) => io.observe(b));
+    return () => io.disconnect();
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+/**
+ * Samples real frame times for a few seconds after the preloader; if the
+ * machine can't hold ~45fps, html gets `lite`, which drops purely decorative
+ * effects (see site.css). Remembered per browser so later visits start lite.
+ */
+function useLiteMode(loading) {
+  useEffect(() => {
+    let stored = null;
+    try {
+      stored = localStorage.getItem("lite-mode");
+    } catch {}
+    if (stored === "1") document.documentElement.classList.add("lite");
+    if (loading || stored !== null) return;
+
+    let raf;
+    let frames = 0;
+    let slow = 0;
+    let last = 0;
+    const start = performance.now();
+    const tick = (now) => {
+      if (last) {
+        frames += 1;
+        if (now - last > 22) slow += 1;
+      }
+      last = now;
+      if (now - start < 3500) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      // Hidden tabs throttle rAF; that says nothing about the machine.
+      if (document.hidden || frames < 30) return;
+      const lite = slow / frames > 0.3;
+      document.documentElement.classList.toggle("lite", lite);
+      try {
+        localStorage.setItem("lite-mode", lite ? "1" : "0");
+      } catch {}
+    };
+    const t = setTimeout(() => (raf = requestAnimationFrame(tick)), 1200);
+    return () => {
+      clearTimeout(t);
+      cancelAnimationFrame(raf);
+    };
+  }, [loading]);
+}
 
 /** True while the URL points at the project archive. Hash-based so the archive
  *  is a linkable, refresh-safe URL on GitHub Pages without a server rewrite. */
@@ -301,6 +370,21 @@ export default function SiteApp() {
   const active = useScrollSpy(SECTIONS, { offset: 200, syncHash: false });
 
   const [theme, toggleTheme] = useTheme(reduced);
+  useSmoothScroll({ enabled: !reduced, paused: loading, archiveHash: ARCHIVE_HASH });
+  usePauseOffscreen([isArchive, loading]);
+  useLiteMode(loading);
+
+  // Prefetch the lazy chunks once the intro is done and the main thread idles.
+  useEffect(() => {
+    if (loading) return;
+    const idle = window.requestIdleCallback ?? ((cb) => setTimeout(cb, 1500));
+    const id = idle(() => {
+      loadArchive();
+      loadPlayground();
+      import("./sections/ToolboxOrbit");
+    });
+    return () => (window.cancelIdleCallback ?? clearTimeout)(id);
+  }, [loading]);
 
   // "The whole story": reaching the footer.
   // Only after the preloader, and only from a real scroll (not a restored
@@ -367,7 +451,9 @@ export default function SiteApp() {
         </header>
 
         {isArchive ? (
-          <ProjectsArchive />
+          <Suspense fallback={<main className="sec archive" style={{ minHeight: "100vh" }} />}>
+            <ProjectsArchive />
+          </Suspense>
         ) : (
           <main>
             <Hero ready={!loading} />
@@ -378,7 +464,10 @@ export default function SiteApp() {
             <Toolbox />
             <Experience />
             <Activity />
-            <Playground />
+            {/* Placeholder keeps the #games anchor and the page height stable. */}
+            <Suspense fallback={<section className="sec" id="games" style={{ minHeight: 720 }} />}>
+              <Playground />
+            </Suspense>
             <Contact />
           </main>
         )}
@@ -386,6 +475,12 @@ export default function SiteApp() {
 
         <Terminal />
         <AchievementToasts />
+
+        {/* React Bits "Gradual Blur": content softens into the bottom edge
+            instead of being sliced off under the dock. */}
+        <div className="edge-blur" aria-hidden="true">
+          <i /><i />
+        </div>
 
         <div className="dock-host">
           {/* accentColor reads the palette variable rather than a per-theme hex, so

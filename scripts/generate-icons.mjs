@@ -24,9 +24,9 @@ const LETTERS = `
 const svg = ({ rounded }) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#6ee7b7"/>
-      <stop offset="0.55" stop-color="#34d399"/>
-      <stop offset="1" stop-color="#059669"/>
+      <stop offset="0" stop-color="#ff5a6c"/>
+      <stop offset="0.55" stop-color="#e8344a"/>
+      <stop offset="1" stop-color="#ff8a3d"/>
     </linearGradient>
     <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
@@ -35,7 +35,7 @@ const svg = ({ rounded }) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0
   </defs>
   <rect width="64" height="64" rx="${rounded ? 15 : 0}" fill="url(#g)"/>
   <rect width="64" height="64" rx="${rounded ? 15 : 0}" fill="url(#shine)"/>
-  <g fill="none" stroke="#032116" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">${LETTERS}
+  <g fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">${LETTERS}
   </g>
 </svg>
 `;

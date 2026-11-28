@@ -8,8 +8,9 @@ import { getLiveDownloadTotal } from './lib/gemStats.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 
-const GOLD = '#E2C799';
-const BORDER_GOLD = 'rgba(226,199,153,0.25)';
+// Ruby fire, matching the site's --accent-text / --accent.
+const GOLD = '#FF7D88';
+const BORDER_GOLD = 'rgba(232,52,74,0.28)';
 
 function h(type, props = {}, ...children) {
   children = children.flat(Infinity).filter(c => c !== null && c !== undefined && c !== false);
@@ -33,7 +34,7 @@ async function main() {
   const { total, isLive } = await getLiveDownloadTotal();
   const displayDownloads = `${total.toLocaleString()}+`;
 
-  const photoSrc = `data:image/svg+xml;base64,${fs.readFileSync(path.join(root, 'public', 'syed_ghani.svg')).toString('base64')}`;
+  const photoSrc = `data:image/jpeg;base64,${fs.readFileSync(path.join(root, 'public', 'hero-portrait.jpg')).toString('base64')}`;
 
   const [spaceGroteskBold, interRegular, interSemiBold] = [
     'SpaceGrotesk-Bold.woff',
@@ -49,7 +50,7 @@ async function main() {
         height: 630,
         display: 'flex',
         flexDirection: 'column',
-        background: 'linear-gradient(155deg, #171717 0%, #121212 45%, #0E0E0E 100%)',
+        background: 'linear-gradient(155deg, #150C0C 0%, #0F0909 45%, #0B0707 100%)',
         padding: '64px 72px',
         position: 'relative',
         fontFamily: 'Inter',
@@ -64,7 +65,7 @@ async function main() {
         width: 560,
         height: 560,
         borderRadius: 999,
-        background: 'radial-gradient(circle, rgba(226,199,153,0.16) 0%, rgba(226,199,153,0) 70%)',
+        background: 'radial-gradient(circle, rgba(255,106,61,0.2) 0%, rgba(232,52,74,0) 70%)',
       },
     }),
 
@@ -82,7 +83,7 @@ async function main() {
         h(
           'div',
           { style: { display: 'flex', fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 30, color: GOLD, marginBottom: 18 } },
-          'Ruby on Rails & React Engineer'
+          'Rails · Shopify · React Engineer'
         ),
         h(
           'div',
@@ -101,7 +102,8 @@ async function main() {
     h(
       'div',
       { style: { display: 'flex', borderTop: `1px solid ${BORDER_GOLD}`, paddingTop: 28, alignItems: 'center', gap: 28 } },
-      statItem('6 SaaS Products'),
+      statItem('148 PRs in one quarter'),
+      statItem('7 SaaS Products'),
       statItem('4 Rails Gems'),
       statItem(`${displayDownloads} Gem Downloads${isLive ? ' (live)' : ''}`)
     )

@@ -8,15 +8,23 @@ import RotatingText from "../../components/reactbits/RotatingText";
 import DecryptedText from "../../components/reactbits/DecryptedText";
 import Magnet from "../../components/reactbits/Magnet";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
+import { IconForTech } from "../../components/Icons";
+import { Tilt } from "../parts";
 import { useThemeMode } from "../../hooks/useThemeMode";
 
 // DotGrid paints on a canvas, so it takes real colours per theme.
 const DOTS = {
-  dark: { base: "#1e2924", active: "#6ee7b7" },
-  light: { base: "#d3d8d2", active: "#059669" },
+  dark: { base: "#2a1b1b", active: "#ff7d88" },
+  light: { base: "#e4d6d3", active: "#cc1530" },
 };
 
-const ROLES = ["SaaS products", "React frontends", "Rails backends", "payment systems"];
+const BADGES = [
+  { name: "Ruby on Rails", icon: "Ruby on Rails" },
+  { name: "Shopify", icon: "Shopify" },
+  { name: "React", icon: "React" },
+];
+
+const ROLES = ["Shopify automation", "vendor integrations", "Rails backends", "billing systems"];
 const EASE = [0.22, 1, 0.36, 1];
 
 // Built from the résumé's ongoing roles so the strapline can never contradict
@@ -32,6 +40,7 @@ const CURRENT_LINE = resumeData.experience
 
 export function Hero({ ready }) {
   const reduced = usePrefersReducedMotion();
+  const narrow = typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches;
   const dots = DOTS[useThemeMode()];
   const { scrollY } = useScroll();
   const lift = useTransform(scrollY, [0, 700], [0, -60]);
@@ -64,11 +73,13 @@ export function Hero({ ready }) {
       </div>
 
       <div className="wrap">
-        <motion.div className="hero-grid" style={reduced ? undefined : { y: lift, opacity: fade }}>
+        {/* No scroll fade on phones: the portrait sits below the fold there, so
+            it would already be half faded by the time anyone scrolled to it. */}
+        <motion.div className="hero-grid" style={reduced || narrow ? undefined : { y: lift, opacity: fade }}>
           <div>
             <motion.span className="pill" {...appear(0.05)}>
               <span className="live-dot" />
-              Available now · remote, worldwide
+              Open to new roles · Lahore &amp; remote
             </motion.span>
 
             {ready && (
@@ -79,7 +90,7 @@ export function Hero({ ready }) {
 
             <motion.div {...appear(0.45)}>
               <p className="hero-sub">
-                <span>Full-stack engineer. I build</span>
+                <span>Rails + Shopify engineer. I build</span>
                 <RotatingText
                   texts={ROLES}
                   mainClassName="rotator"
@@ -91,7 +102,7 @@ export function Hero({ ready }) {
                   splitBy="characters"
                   auto={!reduced}
                 />
-                <span>that ship.</span>
+                <span>that run themselves.</span>
               </p>
               <p className="mono" style={{ color: "var(--dim)", fontSize: 12.5, margin: "0 0 40px", minHeight: 20 }}>
                 {ready && (
@@ -118,16 +129,47 @@ export function Hero({ ready }) {
             </motion.div>
           </div>
 
-          <motion.div
-            className="hero-photo cursor-target"
-            data-cursor-label="hi there"
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={ready ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 1.2, delay: 0.25, ease: EASE }}
-          >
-            <img src={resumeData.photo} alt={resumeData.name} width={840} height={840} fetchpriority="high" />
-            <span className="pill tag"><FiMapPin size={12} /> {resumeData.location}</span>
-          </motion.div>
+          <div className="hero-visual">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={ready ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 1.2, delay: 0.25, ease: EASE }}
+            >
+              {/* A layered diorama: each layer sits at its own depth (--z) on a
+                  preserve-3d stage, so tilting toward the cursor parallaxes
+                  them apart. Nothing in this chain may carry filter, opacity<1
+                  or overflow, or the stage collapses flat. */}
+              <Tilt max={10} glare className="hero-tilt">
+                <div className="hero-stage">
+                  <span className="hero-plate" aria-hidden="true" />
+                  <div className="hero-photo cursor-target" data-cursor-label="hi there">
+                    <img src={resumeData.photo} alt={resumeData.name} width={1200} height={1006} fetchpriority="high" decoding="async" />
+                    <span className="hero-ring" aria-hidden="true" />
+                  </div>
+                  <span className="hero-depth hero-tag-layer" style={{ "--z": "56px" }}>
+                    <span className="pill tag"><FiMapPin size={12} /> {resumeData.location}</span>
+                  </span>
+
+                  {/* What I ship with day to day, floating in front of the portrait. */}
+                  {BADGES.map((b, i) => (
+                    <span key={b.name} className={`hero-depth hero-badge hero-badge-${i + 1}`} style={{ "--z": `${[90, 70, 110][i]}px` }} aria-hidden="true">
+                      <motion.span
+                        style={{ display: "block" }}
+                        initial={{ opacity: 0, scale: 0.6, y: 12 }}
+                        animate={ready ? { opacity: 1, scale: 1, y: 0 } : {}}
+                        transition={{ duration: 0.8, delay: 0.9 + i * 0.15, ease: EASE }}
+                      >
+                        <span className="hero-badge-in">
+                          <IconForTech name={b.icon} size={15} colored={false} />
+                          {b.name}
+                        </span>
+                      </motion.span>
+                    </span>
+                  ))}
+                </div>
+              </Tilt>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
 
